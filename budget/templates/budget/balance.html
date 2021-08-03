@@ -1,0 +1,17 @@
+{% extends "budget/base_generic.html" %}
+
+{% block content %}
+    <h3>Wydatki</h3>
+    <h4>Łącznie: {{aggr_expence}}</h4>
+    {% for expence in all_expences %}
+        <p> {{expence}} </p>
+    {%endfor%}
+
+    <h3>Przychody</h3>
+    <h4>Łącznie: {{aggr_income}}</h4>
+    {% for income in all_incomes %}
+        <p> {{income}} </p>
+    {%endfor%}
+    <h4>Bilans: {{balance}}</h4>
+    
+{% endblock content %}

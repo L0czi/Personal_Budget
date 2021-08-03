@@ -1,0 +1,67 @@
+{% extends "budget/base_generic.html" %}
+
+{% block content %}
+  <h1>Wydatki</h1>
+  {% if expence_cat %}
+  <ul class="list-group">
+    {% for element in expence_cat %}
+      <li class="list-group-item">
+       {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no category in db.</p>
+  {% endif %} 
+  
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form_add_ex_cat.as_table }}
+    </table>
+    <input type="submit" value="Dodaj" name="add_expence_category">
+  </form>
+
+  <h1>Przychody</h1>
+  {% if income_cat %}
+  <ul class="list-group">
+    {% for element in income_cat %}
+      <li class="list-group-item">
+       {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-inc-cat-update' element.name %}">Edytuj</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no category in db.</p>
+  {% endif %}
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form_add_in_cat.as_table }}
+    </table>
+    <input type="submit" value="Dodaj" name="add_income_category">
+  </form>
+
+  <h1>Płatności</h1>
+  {% if expence_way %}
+  <ul class="list-group">
+    {% for element in expence_way %}
+      <li class="list-group-item">
+        {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no category in db.</p>
+  {% endif %}
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form_add_way.as_table }}
+    </table>
+    <input type="submit" value="Dodaj" name="add_expence_way">
+  </form>
+
+{% endblock %}
