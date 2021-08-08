@@ -41,7 +41,8 @@ def create_income(request):
             user=request.user,  
             income_category=income.income_category,
             ammount = income.ammount,
-            date = income.date
+            date = income.date,
+            notes = income.notes
             )
             
             add_income.save()
@@ -69,7 +70,8 @@ def create_expence(request):
             expence_way= expence.expence_way, 
             expence_category=expence.expence_category,
             ammount = expence.ammount,
-            date = expence.date
+            date = expence.date,
+            notes = expence.notes
             )
             
             add_expence.save()

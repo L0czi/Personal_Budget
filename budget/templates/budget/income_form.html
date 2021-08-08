@@ -3,18 +3,20 @@
 
 {% block css %}
   {% load static %}
-  <link rel="stylesheet" href="{% static 'budget/income.css' %}">
+  <link rel="stylesheet" href="{% static 'budget/transactions.css' %}">
 {% endblock css %}
 
 
 {% block content %}
 <form method="post">{% csrf_token %}
   <div class="container offset-xl-3 offset-lg-2 offset-md-1 offset-sm-2 offset-1 col-xl-6 col-lg-8 col-md-10 col-sm-8 col-10 bg-main">
+    <!--Title-->
     <div class="row">
       <div class="col-12 bg_form">
         <label>Dodaj przychód</label>
       </div>
     </div>
+    <!-- Ammount and Date-->
     <div class="row">
       <div class="col-12 col-md-6">
       {{ form.ammount|as_crispy_field }}
@@ -23,6 +25,7 @@
         {{ form.date|as_crispy_field }}
       </div>
     </div>
+    <!-- info ribbon-->
     <div class="row transaction-alert" >
       {% if messages %}
       {% for message in messages %}
@@ -32,36 +35,51 @@
       {% endfor %}
       {% endif %}
     </div>
+    <!--Income category-->
     <div class="row">
+
       <div class="col-12 col-md-6 ">
         {{form.income_category|as_crispy_field}}
       </div>
+
       <div class="col-12 col-md-6">
         {{form.notes |as_crispy_field}}
+         <!--Buttons for desktop version-->
         <div class="row">
+
           <div class="col-6 d-md-block d-none transaction_button">
-            <button name="add_expence_category" type="submit" class="btn btn-secondary">Dodaj</button>
+            <button type="submit" class="btn btn-secondary">Dodaj</button>
           </div>
+
           <div class="col-6 d-md-block d-none transaction_button">
             <button type="reset" class="btn btn-danger">Anuluj</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <br>
+    </div>   
   </div>
+      <!--Buttons for mobile version-->
+  <div class="col-12 d-md-none d-block" id="buttons_footer">
+
+    <div class="row">
+      
+      <div class="transaction_button col-4">
+        <button class="btn btn-danger" type="reset" value="Reset">Anuluj</button>
+      </div>
+  
+      <div class="transaction_button offset-4 col-4">
+        <button type="submit" class="btn btn-secondary">Dodaj</button>
+      </div>
+    </div>
+  </div> 
 </form>
 
 {% endblock %}
 
 
 
-<
 
-<section>
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags}}">
-     {{ message }}
-  </div>
-  {% endfor %}
-    {% endif %}
-</section>

@@ -8,14 +8,14 @@ class ExpenceCategory (models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     name = models.CharField(max_length=100)
     def __str__ (self):
-        return f'({self.name}, {self.user})'  
+        return self.name  
 
 class ExpenceWay (models.Model):
     '''Model representing all possible expence way'''
     user = models.ForeignKey(User, on_delete=CASCADE)
     name = models.CharField(max_length=100)
     def __str__ (self):
-        return f'({self.name}, {self.user})' 
+        return self.name 
 
 class Expence (models.Model):
     '''Model representing particular expence'''
@@ -23,7 +23,9 @@ class Expence (models.Model):
     expence_way = models.ForeignKey(ExpenceWay, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=CASCADE)
     ammount = models.DecimalField(max_digits=8, decimal_places=2)
-    date = models.DateTimeField(default=now, blank=True)
+    date = models.DateField(default=now, blank=True)
+    notes = models.CharField(max_length=100, blank=True)
+
     def __str__ (self):
         return f'{self.user}: {self.expence_category}, {self.expence_way}, {self.ammount}'  
 
