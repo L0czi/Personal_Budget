@@ -1,0 +1,92 @@
+@import url('colors.css');
+
+body
+{
+    background-color: var(--main-bg-color);
+    background-size: 100% auto;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+	min-width: 300px;
+}
+
+h1
+{
+    font-weight: 900;
+    font-size: calc(1em + 3vw);
+}
+
+article {
+	font-size: 16px;
+    text-align: justify;
+    text-justify: inter-word;
+	padding: 5px;
+	height: 100%;
+}
+
+.center {
+	margin: 0 auto;
+}
+.logo
+{
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 3px; 
+    text-align: center;
+}
+
+.ribbon-info
+{
+    margin-top: 20px;
+	margin-bottom: 20px;
+    padding: 5px;
+	font-size: calc(16px + 2vmin);
+    text-align: center;
+    background-color: var(--ribbon-info);
+    color: black;
+}
+
+.navbar
+{
+    background-color: var(--dark-color);
+}
+
+.navbar-toggler
+{
+    background-color:var(--bright);
+}
+
+.nav-item
+{
+    background-color: var(--bright);
+    border: 2px solid black;
+    border-radius: 10px;
+    font-size: 16px;
+    margin: 5px;
+    min-width: 145px;
+    text-align: center;
+
+}
+
+.nav-item:hover
+{
+    background-color: #F36742;
+}
+
+.bg-main {
+    background-color: #128870;
+    color: white;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+.margin5
+{
+    margin-top: 15px;
+    margin-bottom: 5px;
+
+}
+
+.height_min30
+ {
+	min-height: 30px;
+}
