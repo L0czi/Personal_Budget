@@ -2,4 +2,5 @@ perbud_venv
 db.sqlite3
 personal_budget/__pycache__
 budget/__pycache__
-budget/static
+
+

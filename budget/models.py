@@ -33,13 +33,14 @@ class IncomeCategory (models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     name = models.CharField(max_length=100)
     def __str__ (self):
-        return f'({self.name}, {self.user})' 
+        return self.name 
 
 class Income (models.Model):
     '''Model representing particular income'''
-    income_category = models.ForeignKey(IncomeCategory, on_delete=CASCADE)
+    income_category = models.ForeignKey(IncomeCategory, on_delete=CASCADE, blank=False)
     user = models.ForeignKey(User, on_delete=CASCADE)
     ammount = models.DecimalField(max_digits=8, decimal_places=2)
-    date = models.DateTimeField(default=now, blank=True)
+    date = models.DateField(default=now, blank=True)
+    notes = models.CharField(max_length=100, blank=True)
     def __str__ (self):
-        return f'{self.user}: {self.income_category}, {self.ammount}'  
+        return f'{self.user}: {self.income_category}, {self.ammount}, {self.date}'  

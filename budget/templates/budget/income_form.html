@@ -1,14 +1,67 @@
 {% extends "budget/base_generic.html" %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'budget/income.css' %}">
+{% endblock css %}
+
 
 {% block content %}
-
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <input type="submit" value="Dodaj" name="add_expence_category">
-  </form>
-
+<form method="post">{% csrf_token %}
+  <div class="container offset-xl-3 offset-lg-2 offset-md-1 offset-sm-2 offset-1 col-xl-6 col-lg-8 col-md-10 col-sm-8 col-10 bg-main">
+    <div class="row">
+      <div class="col-12 bg_form">
+        <label>Dodaj przychód</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+      {{ form.ammount|as_crispy_field }}
+      </div>
+      <div class="col-12 col-md-6">
+        {{ form.date|as_crispy_field }}
+      </div>
+    </div>
+    <div class="row transaction-alert" >
+      {% if messages %}
+      {% for message in messages %}
+      <div class="col-12 alert alert-success" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 ">
+        {{form.income_category|as_crispy_field}}
+      </div>
+      <div class="col-12 col-md-6">
+        {{form.notes |as_crispy_field}}
+        <div class="row">
+          <div class="col-6 d-md-block d-none transaction_button">
+            <button name="add_expence_category" type="submit" class="btn btn-secondary">Dodaj</button>
+          </div>
+          <div class="col-6 d-md-block d-none transaction_button">
+            <button type="reset" class="btn btn-danger">Anuluj</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
 
 {% endblock %}
+
+
+
+<
+
+<section>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags}}">
+     {{ message }}
+  </div>
+  {% endfor %}
+    {% endif %}
+</section>
