@@ -1,41 +1,46 @@
 {% extends "budget/base_generic.html" %}
+{% load crispy_forms_tags %}
 
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'budget/login.css' %}">
+{% endblock css %}
 
 {%block buttons%}
-<li>
-  <a class="nav-link" href="{% url 'register' %}">Zarejestruj</a>
-</li>
+<ul class="navbar-nav offset-6">
+  <li class="nav-item active">
+    <a class="nav-link" href="{% url 'register' %}">Zarejestruj</a>
+  </li>
+</ul>
 {%endblock buttons%}
 
-{% block content %}
-
+{% block alert %}
   {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+    <div class="alert alert-danger ribbon-warning" role="alert">
+      Podana nazwa użytkownika różni się od hasła. Proszę spróbować ponownie.
+    </div>
   {% endif %}
+{% endblock alert %}
 
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-
+{% block content %}
   <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ next }}" />
+    <div class="container col-10 col-sm-8 col-md-6 col-xl-4 offset-sm-2 offset-md-3 offset-xl-4 form-box">
+      <div class="row form-container">
+        <div class="col-12 input-container">
+          {{ form.username}}
+          {{ form.username.errors }}
+        </div>
+        <div class="col-12 input-container">
+          {{ form.password}}
+          {{ form.password.errors }}
+        </div>
+        <div class="col-12 submit-container">
+          <input class="btn btn-secondary" type="submit" value="Zaloguj" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+      </div>
+
   </form>
 
 

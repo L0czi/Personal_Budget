@@ -19,12 +19,14 @@
 			<h1><u>PersonalBudgetApp</u></h1>
 		</div>
 		<nav class="navbar navbar-light navbar-expand-lg ribbon shadow ">
+			{% if user.is_authenticated %}
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>MENU
 			</button>
+			
 			<div class="collapse navbar-collapse  justify-content-center" id="mainmenu">
 				<ul class="navbar-nav">
-					{% if user.is_authenticated %}
+					
 					<li class="nav-item active">
 						<a class="nav-link" href="{% url 'index' %}">Start </a>
 					</li>
@@ -41,17 +43,19 @@
 						<a class="nav-link" href="{% url 'settings' %}">Ustawienia</a>
 					</li>
 					<li class="nav-item active">
-						<a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Wyloguj</a>
+						<a class="nav-link" href="{% url 'logout'%}">Wyloguj</a>
 					</li>
-					{% else %}
-					{%block buttons%}
-					{%endblock buttons%}
-					{% endif %}
 				</ul>
 			</div>
+			{% else %}
+				{%block buttons%}
+				{%endblock buttons%}
+			{% endif %}
 		</nav>
 		</div>
 	</header>
+		{% block alert %}
+        {% endblock alert%}
 	<main>
         	{% block content %}
         	{% endblock content %}

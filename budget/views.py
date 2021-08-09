@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from . models import ExpenceCategory, ExpenceWay, IncomeCategory, Expence, Income
 from . forms import AddExpenceForm, UserRegisterForm, ExpenceCategoryForm,  WayCategoryForm, IncomeCategoryForm, AddIncomeForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import logout_then_login
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -241,4 +242,3 @@ def register(request):
         'form': form,
     }
     return render(request, 'budget/register.html', context)
-

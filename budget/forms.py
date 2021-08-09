@@ -2,8 +2,9 @@ from django import forms
 from django.forms import widgets
 from django.forms.widgets import RadioSelect
 from . models import Expence, Income, ExpenceCategory, ExpenceWay, IncomeCategory
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+
 
 class IncomeCategoryForm (forms.ModelForm):
     class Meta:
@@ -93,3 +94,23 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+from django.contrib.auth.forms import AuthenticationForm
+
+from django import forms
+
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={
+            'class': 'input-field', 
+            'placeholder': 'Użytkownik', 
+}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'class': 'input-field',
+            'placeholder': 'Hasło',
+}))

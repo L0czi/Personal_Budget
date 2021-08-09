@@ -74,7 +74,7 @@ article {
 }
 
 .bg-main {
-    background-color: #128870;
+    background-color: var(--form-bg-color);
     color: white;
     margin-top: 20px;
     border-radius: 5px;
