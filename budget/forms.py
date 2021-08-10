@@ -2,10 +2,12 @@ from django import forms
 from django.forms import widgets
 from django.forms.widgets import RadioSelect
 from . models import Expence, Income, ExpenceCategory, ExpenceWay, IncomeCategory
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.utils.translation import gettext, gettext_lazy as _
 
-
+from django.forms.utils import ErrorList
 class IncomeCategoryForm (forms.ModelForm):
     class Meta:
         model = IncomeCategory
@@ -89,16 +91,26 @@ class AddIncomeForm (forms.ModelForm):
         self.fields ['income_category'].queryset = IncomeCategory.objects.filter(user=user)
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'input-field','placeholder': 'email'}),)
+
+    password1 = forms.CharField( 
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'input-field','placeholder': 'Hasło'}),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),
+        )
+
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'input-field','placeholder': 'Potwórz hasło'}),
+        strip=False,
+        help_text=_("Enter the same password as before, for verification."),
+        )
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
-
-from django.contrib.auth.forms import AuthenticationForm
-
-from django import forms
-
+        widgets = {
+            'username' :forms.TextInput(attrs={'class': 'input-field', 'placeholder': 'Użytkownik'}),
+        }
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

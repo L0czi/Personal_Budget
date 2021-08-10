@@ -1,17 +1,56 @@
 {% extends "budget/base_generic.html" %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'budget/authentication.css' %}">
+{% endblock css %}
+
 {%block buttons%}
-<li>
-  <a class="nav-link" href="{% url 'login' %}">Zaloguj</a>
-</li>
+<ul class="navbar-nav offset-6">
+  <li class="nav-item active">
+    <a class="nav-link" href="{% url 'login' %}">Zaloguj</a>
+  </li>
+</ul>
 {%endblock buttons%}
 
+{% block alert %}
+  {% if form.errors.username %}
+  <div class="col-12 ribbon-warning alert alert-danger role="alert">
+    Błędna nazwa użytkownika. Prosze wybrać inną.
+  </div>
+  {% elif form.errors.password2 %}
+  <div class="col-12 ribbon-warning alert alert-danger role="alert">
+   Błędne hasło. Spróbuj ponownie.
+  </div>
+  {% elif form.errors.email %}
+  <div class="col-12 ribbon-warning alert alert-danger role="alert">
+   Błędny email. Spróbuj ponownie.
+  </div>
+  {% endif %}
+{% endblock alert %}
 
 {% block content %}
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <input type="submit" value="Submit">
+  <form method="post">{% csrf_token %}
+    <div class="container col-10 col-sm-8 col-md-6 col-xl-4 offset-sm-2 offset-md-3 offset-xl-4 form-box">
+      <div class="row form-container">
+        <div class="col-12 input-container">
+          {{ form.username}}
+        </div>
+        <div class="col-12 input-container">
+          {{ form.email}}
+        </div>
+        <div class="col-12 input-container">
+          {{ form.password1}}
+        </div>
+        <div class="col-12 input-container">
+          {{ form.password2}}  
+        </div>
+        <div class="col-12 input-container">
+          <input class="btn btn-secondary" type="submit" value="Zarejestruj" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+      </div>
+    </div>
   </form>
 {% endblock %}

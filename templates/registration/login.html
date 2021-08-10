@@ -3,7 +3,7 @@
 
 {% block css %}
   {% load static %}
-  <link rel="stylesheet" href="{% static 'budget/login.css' %}">
+  <link rel="stylesheet" href="{% static 'budget/authentication.css' %}">
 {% endblock css %}
 
 {%block buttons%}
@@ -16,9 +16,15 @@
 
 {% block alert %}
   {% if form.errors %}
-    <div class="alert alert-danger ribbon-warning" role="alert">
-      Podana nazwa użytkownika różni się od hasła. Proszę spróbować ponownie.
-    </div>
+  <div class="col-12 ribbon-warning alert alert-danger role="alert">
+      Podana nazwa użytkownika nie jest zgodna z hasłem. Proszę spróbować ponownie.
+  </div>
+  {% elif messages %}
+    {% for message in messages %}
+      <div class="col-12 ribbon-warning alert alert-success role="alert">
+        {{message}}
+      </div>
+    {% endfor %}
   {% endif %}
 {% endblock alert %}
 

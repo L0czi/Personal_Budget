@@ -1,9 +1,7 @@
-from django.db.models.fields import CharField
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from . models import ExpenceCategory, ExpenceWay, IncomeCategory, Expence, Income
 from . forms import AddExpenceForm, UserRegisterForm, ExpenceCategoryForm,  WayCategoryForm, IncomeCategoryForm, AddIncomeForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import logout_then_login
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -216,21 +214,21 @@ def register(request):
         if form.is_valid():
             user = form.save()
 
-            default_espence_cat = ['Transport',
+            default_expence_cat = ['Transport',
             'Jedzenie', 'Książki', 'Mieszkanie','Telekomunikacja',
             'Zdrowie', 'Odzież', 'Higiena', 'Dzieci', 'Rekreacja',
             'Wycieczki', 'Oszczędności', 'Prezenty', 'Inne'
             ]
 
-            for category in default_espence_cat:
+            for category in default_expence_cat:
                 ExpenceCategory.objects.create(user=user,name=category)
             
             default_expence_way = ['Gotówka', 'Karta kredytowa', 'Karta płatnicza']
             for category in default_expence_way:
                 ExpenceWay.objects.create(user=user,name=category)
             
-            default_income_category = ['Pensja', 'Odsetki', 'Inne']
-            for category in default_income_category:
+            default_income_cat = ['Pensja', 'Odsetki', 'Inne']
+            for category in default_income_cat:
                 IncomeCategory.objects.create(user=user,name=category)
             
             username = form.cleaned_data.get('username')
@@ -238,7 +236,5 @@ def register(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
-        context = {
-        'form': form,
-    }
-    return render(request, 'budget/register.html', context)
+
+    return render(request, 'budget/register.html', {'form': form})
