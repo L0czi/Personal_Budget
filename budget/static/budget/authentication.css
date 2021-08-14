@@ -14,10 +14,10 @@
 }
 
 .ribbon-warning
-{
-	position: absolute;
+{	
+	padding: 0px;
+	margin-bottom: 0px;
     margin-top: 10px;
-	margin-bottom: 10px;
 	font-size: calc(12px + 0.5vmin);
     text-align: center;
 }
@@ -49,3 +49,4 @@
 	width: 100%;
 	border-radius: 0px;
 }
+

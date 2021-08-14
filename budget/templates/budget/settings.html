@@ -1,28 +1,126 @@
 {% extends "budget/base_generic.html" %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'budget/settings.css' %}">
+{% endblock css %}
+
 
 {% block content %}
-  <h1>Wydatki</h1>
-  {% if expence_cat %}
-  <ul class="list-group">
-    {% for element in expence_cat %}
-      <li class="list-group-item">
-       {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a>
-      </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-    <p>There are no category in db.</p>
-  {% endif %} 
-  
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form_add_ex_cat.as_table }}
-    </table>
-    <input type="submit" value="Dodaj" name="add_expence_category">
-  </form>
 
-  <h1>Przychody</h1>
+<section class='mt-3'>
+  <!--INCOMES-->
+  <div class='container'>
+    <div class="offset-xl-3 offset-lg-2 offset-md-1 col-xl-6 col-lg-8 col-md-10 col-12 mb-3">
+      <div class="row">
+        <button class="mb-2 castom-btn js_button shadow">Przychody</button>
+      </div>
+      <div class="js_toggle_group" style="display: none;">
+        {% if income_cat %}
+        <ul class="list-group">
+          {% for element in income_cat %}
+          <li class="list-group-item">
+            <span>{{ element.name }}</span>
+            <div style="float: right;"<a class='btn btn-secondary btn-sm' href="{% url 'settings-inc-cat-update' element.name %}">Edytuj</a></div>
+          </li>
+          {% endfor %}
+          <li class="list-group-item">
+            <div style="float: right;">
+              <form action="" method="post">{% csrf_token %}
+                <div class="btn-group">
+                  {{form_add_in_cat.name|as_crispy_field}}
+                  <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                </div>
+              </form>
+            </div>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!--EXPENCE-->
+  <div class='container'>
+    <div class="offset-xl-3 offset-lg-2 offset-md-1 col-xl-6 col-lg-8 col-md-10 col-12 mb-3">
+      <div class="row">
+        <button class="mb-2 castom-btn js_button shadow">Wydatki</button>
+      </div>
+      <div class="js_toggle_group" style="display: none;">
+        {% if expence_cat %}
+        <ul class="list-group">
+          {% for element in expence_cat %}
+          <li class="list-group-item">
+            <span>{{ element.name }}</span>
+            <div style="float: right;"><a class='btn btn-secondary btn-sm' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a></div>
+          </li>
+          {% endfor %}
+          <li class="list-group-item">
+            <div style="float: right;">
+              <form action="" method="post">{% csrf_token %}
+                <div class="btn-group">
+                  {{form_add_ex_cat.name|as_crispy_field}}
+                  <button name="add_expence_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                </div>
+              </form>
+            </div>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!--EXPENCE WAY-->
+  <div class='container'>
+    <div class="offset-xl-3 offset-lg-2 offset-md-1 col-xl-6 col-lg-8 col-md-10 col-12 mb-3">
+      <div class="row">
+        <button class="mb-2 castom-btn js_button shadow">Płatności</button>
+      </div>
+      <div class="js_toggle_group" style="display: none;">
+        {% if expence_way %}
+        <ul class="list-group">
+          {% for element in expence_way %}
+          <li class="list-group-item">
+            <span>{{ element.name }}</span>
+            <div style="float: right;"<a class='btn btn-secondary btn-sm' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a></div>
+          </li>
+          {% endfor %}
+          <li class="list-group-item">
+            <div style="float: right;">
+              <form action="" method="post">{% csrf_token %}
+                <div class="btn-group">
+                  {{form_add_way.name|as_crispy_field}}
+                  <button name="add_expence_way" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                </div>
+              </form>
+            </div>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
+{%block script%}
+
+<script>
+  $(document).ready(function(){
+    $('button.js_button').click(function(){
+      $(this).parent().next('div.js_toggle_group').slideToggle(150);
+    })
+  })
+  </script>
+
+{%endblock script%}
+
+
+adsd
+
+
+
+<h1>Przychody</h1>
   {% if income_cat %}
   <ul class="list-group">
     {% for element in income_cat %}
@@ -63,5 +161,3 @@
     </table>
     <input type="submit" value="Dodaj" name="add_expence_way">
   </form>
-
-{% endblock %}

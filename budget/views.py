@@ -94,10 +94,10 @@ def index(request):
 def add_category(form, model, request):
     category = form.save(commit=False)
     #check if user already have a category with given name
-    if model.objects.filter(user=request.user, name=category.name.title()):
+    if model.objects.filter(user=request.user, name=category.name[0:15].title()):
         messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
     else:
-        new_category = model.objects.create(user=request.user, name=category.name.title())
+        new_category = model.objects.create(user=request.user, name=category.name[0:15].title())
         new_category.save()
 
 @login_required
@@ -154,6 +154,7 @@ def expence_category_update (request, name):
             if ExpenceCategory.objects.filter(user=request.user, name=category.name.title()):
                 messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
             else:
+                category.name = category.name[0:15]
                 category.save()
             return redirect('settings')
     else:
@@ -176,6 +177,7 @@ def income_category_update (request, name):
             if IncomeCategory.objects.filter(user=request.user, name=category.name.title()):
                 messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
             else:
+                category.name = category.name[0:15]
                 category.save()
             return redirect('settings')
     else:
@@ -197,6 +199,7 @@ def way_category_update (request, name):
             if ExpenceWay.objects.filter(user=request.user, name=category.name.title()):
                 messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
             else:
+                category.name = category.name[0:15]
                 category.save()
             return redirect('settings')
     else:
