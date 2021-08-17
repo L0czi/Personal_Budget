@@ -33,7 +33,7 @@ jQuery
 ## Project Status
 Project is: _in progress_ 
 
-##To do:
+## To do:
 - Add possibility to edit and delete your incomes and expences
 - Add possibility to delete incomes and expences category.
 - Add AJAX requests to edit / delete forms.
