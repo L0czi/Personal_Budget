@@ -16,11 +16,11 @@ This is my first Django web application which I created for learning purpose.
 Main goal is to allow users to better manage their personal budget by tracing all expenses and incomes. 
 
 ## Technologies
-Python 3.8.5
-Django 3.2.5
-Bootstrap 5
-SQLite 3
-jQuery
+- Python 3.8.5
+- Django 3.2.5
+- Bootstrap 5
+- SQLite 3
+- jQuery
 
 ## Features
 - Create your own expences and incomes category
