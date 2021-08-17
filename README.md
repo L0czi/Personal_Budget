@@ -30,7 +30,7 @@ Main goal is to allow users to better manage their personal budget by tracing al
 ![Example screenshot](./img/screen.png)
 
 ## Setup
-- Clone the repository 'git clone https://github.com/L0czi/Personal_Budget.git'
+- Clone the repository ('git clone https://github.com/L0czi/Personal_Budget.git')
 - Create your own virtual environment
 
 ## Project Status
