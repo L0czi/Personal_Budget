@@ -95,6 +95,16 @@ header
     margin-top: 20px;
     border-radius: 5px;
 }
+
+.bg-form
+{   
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+    background-color: var(--bright);
+}
 .margin5
 {
     margin-top: 15px;

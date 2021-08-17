@@ -71,12 +71,3 @@ input[type='radio']
     margin-bottom: 10px;
 }
 
-.bg_form
-{   
-    margin-top: 10px;
-    margin-bottom: 5px;
-    font-size: 1.5em;
-    font-weight: bold;
-    color: black;
-    background-color: var(--bright);
-}

@@ -8,23 +8,47 @@ from django.db.models import Sum
 
 @login_required
 def balance(request):
-    all_expences = Expence.objects.filter(user=request.user)
-    all_incomes = Income.objects.filter(user=request.user)
+    # All expences for currently log user
+    all_expences_categorys = ExpenceCategory.objects.filter(user=request.user)
 
+    # All expences aggragate by category for currently log user
+    aggr_exp_category_query = [Expence.objects
+        .filter(
+            user=request.user, 
+            expence_category=expence_category)
+        .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in all_expences_categorys]
+
+    # (expence category name, summary expence for category)
+    aggr_exp_category = list(zip(all_expences_categorys, aggr_exp_category_query))
+
+    # Sum of all expence
     aggr_expences_query = Expence.objects.filter(user=request.user).aggregate(Sum('ammount'))
-    aggr_expence = aggr_expences_query['ammount__sum']
+    aggr_expences = aggr_expences_query['ammount__sum']
 
-    aggr_income_query = Income.objects.filter(user=request.user).aggregate(Sum('ammount'))
-    aggr_income = aggr_income_query['ammount__sum']
+    # all incomes for currently log user
+    all_incomes_categorys = IncomeCategory.objects.filter(user=request.user)
 
-    balance = aggr_income - aggr_expence
+    #All incomes aggragate by category for currently log user
+    aggr_inc_category_query = [Income.objects
+        .filter(
+            user=request.user, 
+            income_category=income_category)
+        .aggregate(Sum('ammount'))['ammount__sum'] for income_category in all_incomes_categorys]
+
+    aggr_inc_category = list(zip(all_incomes_categorys, aggr_inc_category_query))
+
+    aggr_incomes_query = Income.objects.filter(user=request.user).aggregate(Sum('ammount'))
+    aggr_incomes = aggr_incomes_query['ammount__sum']
+
+    #balance = aggr_income - aggr_expence
 
     context = {
-        'balance':balance,
-        'aggr_expence':aggr_expence,
-        'aggr_income':aggr_income,
-        'all_expences':all_expences,
-        'all_incomes':all_incomes,
+        'all_expences_categorys': all_expences_categorys,
+        'all_incomes_categorys' : all_incomes_categorys,
+        'aggr_exp_category': aggr_exp_category,
+        'aggr_inc_category': aggr_inc_category,
+        'aggr_expences': aggr_expences,
+        'aggr_incomes' : aggr_incomes,
     }
 
     return render(request,'budget/balance.html', context)

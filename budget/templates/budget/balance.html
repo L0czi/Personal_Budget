@@ -1,17 +1,42 @@
 {% extends "budget/base_generic.html" %}
 
 {% block content %}
-    <h3>Wydatki</h3>
-    <h4>Łącznie: {{aggr_expence}}</h4>
-    {% for expence in all_expences %}
-        <p> {{expence}} </p>
-    {%endfor%}
+<section>
+    <div class="container bg-main"">
+        <div class="row">
+            
+            <div class="col-md-6">
+                <!--All expences grouped by category-->
+                <h5 class=" mt-2 mb-2">Wydatki Łącznie: {{aggr_expences}}</h5>
+                </ul class="list-group">
+                    {% for name, ammount in aggr_exp_category %}
+                        {% if ammount != None %}
+                    <li class="list-group-item d-flex">
+                        <span class="mr-auto" style="color: black;">{{name}}</span>
+                        <span class="mr-2" style="color: black;">{{ammount}}</span>
+                        <div <a class='btn btn-secondary btn-sm' href="#">Szczegóły</a></div>
+                    </li>
+                        {%endif%}
+                    {%endfor%}
+                </ulv>
 
-    <h3>Przychody</h3>
-    <h4>Łącznie: {{aggr_income}}</h4>
-    {% for income in all_incomes %}
-        <p> {{income}} </p>
-    {%endfor%}
-    <h4>Bilans: {{balance}}</h4>
-    
+                <!--All incomes grouped by category-->
+                <h5 class=" mt-2 mb-2">Przychody Łącznie: {{aggr_incomes}}</h5>
+                </ul class="list-group">
+                    {% for name, ammount in aggr_inc_category %}
+                        {% if ammount != None %}
+                    <li class="list-group-item d-flex">
+                        <span class="mr-auto" style="color: black;">{{name}}</span>
+                        <span class="mr-2" style="color: black;">{{ammount}}</span>
+
+                        <div <a class='btn btn-secondary btn-sm' href="#">Szczegóły</a></div>
+                    </li>
+                        {%endif%}
+                    {%endfor%}
+                </ulv>
+                <br>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
