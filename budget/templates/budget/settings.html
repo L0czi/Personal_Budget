@@ -20,20 +20,18 @@
         {% if income_cat %}
         <ul class="list-group">
           {% for element in income_cat %}
-          <li class="list-group-item">
-            <span>{{ element.name }}</span>
-            <div style="float: right;"<a class='btn btn-secondary btn-sm' href="{% url 'settings-inc-cat-update' element.name %}">Edytuj</a></div>
+          <li class="list-group-item d-flex">
+            <span class="mr-auto">{{ element.name }}</span>
+            <div><a class='btn btn-secondary btn-sm' href="{% url 'settings-inc-cat-update' element.name %}">Edytuj</a></div>
           </li>
           {% endfor %}
-          <li class="list-group-item">
-            <div style="float: right;">
-              <form action="" method="post">{% csrf_token %}
-                <div class="btn-group">
-                  {{form_add_in_cat.name|as_crispy_field}}
-                  <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
-                </div>
-              </form>
-            </div>
+          <li class="list-group-item d-flex justify-content-end">
+            <form action="" method="post">{% csrf_token %}
+              <div class="btn-group">
+                {{form_add_in_cat.name|as_crispy_field}}
+                <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+              </div>
+            </form>
           </li>
         </ul>
         {% endif %}
@@ -50,20 +48,18 @@
         {% if expence_cat %}
         <ul class="list-group">
           {% for element in expence_cat %}
-          <li class="list-group-item">
-            <span>{{ element.name }}</span>
-            <div style="float: right;"><a class='btn btn-secondary btn-sm' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a></div>
+          <li class="list-group-item d-flex">
+            <span class="mr-auto">{{ element.name }}</span>
+            <div><a class='btn btn-secondary btn-sm' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a></div>
           </li>
           {% endfor %}
-          <li class="list-group-item">
-            <div style="float: right;">
-              <form action="" method="post">{% csrf_token %}
-                <div class="btn-group">
-                  {{form_add_ex_cat.name|as_crispy_field}}
-                  <button name="add_expence_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
-                </div>
-              </form>
-            </div>
+          <li class="list-group-item d-flex justify-content-end">
+            <form action="" method="post">{% csrf_token %}
+              <div class="btn-group">
+                {{form_add_ex_cat.name|as_crispy_field}}
+                <button name="add_expence_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+              </div>
+            </form>
           </li>
         </ul>
         {% endif %}
@@ -80,20 +76,18 @@
         {% if expence_way %}
         <ul class="list-group">
           {% for element in expence_way %}
-          <li class="list-group-item">
-            <span>{{ element.name }}</span>
-            <div style="float: right;"<a class='btn btn-secondary btn-sm' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a></div>
+          <li class="list-group-item d-flex">
+            <span class="mr-auto">{{ element.name }}</span>
+            <div><a class='btn btn-secondary btn-sm' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a></div>
           </li>
           {% endfor %}
-          <li class="list-group-item">
-            <div style="float: right;">
-              <form action="" method="post">{% csrf_token %}
-                <div class="btn-group">
-                  {{form_add_way.name|as_crispy_field}}
-                  <button name="add_expence_way" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
-                </div>
-              </form>
-            </div>
+          <li class="list-group-item d-flex justify-content-end">
+            <form action="" method="post">{% csrf_token %}
+              <div class="btn-group">
+                {{form_add_way.name|as_crispy_field}}
+                <button name="add_expence_way" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+              </div>
+            </form>
           </li>
         </ul>
         {% endif %}
