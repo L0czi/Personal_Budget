@@ -27,6 +27,7 @@ Main goal is to allow users to better manage their personal budget by tracing al
 - Select from diffrent paymant methods and add your own.
 
 ## Screenshots
+![Example screenshot](./img/screen.png)
 
 ## Setup
 
