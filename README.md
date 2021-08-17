@@ -39,5 +39,5 @@ Project is: _in progress_
 - Add AJAX requests to edit / delete forms.
 - ...
 
-##Acknowledgements
+## Acknowledgements
 - This project was based on [this project](https://www.youtube.com/watch?v=HAiIemkzTh4)
