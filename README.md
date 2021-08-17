@@ -38,7 +38,9 @@ Main goal is to allow users to better manage their personal budget by tracing al
 `source venv/bin/activate`
 
 - Install requirements
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 - Make your migrations
 `python manage.py makemigrations`
