@@ -31,11 +31,15 @@ Main goal is to allow users to better manage their personal budget by tracing al
 
 ## Setup
 - Clone the repository 
-`git clone https://github.com/L0czi/Personal_Budget.git`
+```
+git clone https://github.com/L0czi/Personal_Budget.git
+```
 
 - Create your own virtual environment
-`python3 -m venv venv`
-`source venv/bin/activate`
+```
+python3 -m venv venv
+source venv/bin/activate
+```
 
 - Install requirements
 ```
@@ -43,14 +47,20 @@ pip install -r requirements.txt
 ```
 
 - Make your migrations
-`python manage.py makemigrations`
-`python manage.py migrate`
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 
 - Create a new superuser
-`python manage.py createsuperuser`
+```
+python manage.py createsuperuser
+```
 
 - Final checks
-`python manage.py runserver`
+```
+python manage.py runserver
+```
 
 ## Project Status
 Project is:  _in progress_ 
