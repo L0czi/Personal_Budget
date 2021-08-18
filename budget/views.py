@@ -236,7 +236,11 @@ def way_category_update (request, name):
     return render(request,'budget/category_update.html',context)
     
 def register(request):
-    if request.method == 'POST':
+    
+    if request.user.is_authenticated:
+        return redirect('index')
+
+    elif request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
