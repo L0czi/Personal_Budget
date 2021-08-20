@@ -85,7 +85,19 @@
   </div> 
 </form>
 
-{% endblock %}
+{% endblock content %}
+
+{%block script%}
+
+<script>
+  $(document).ready(function(){
+
+    $('#id_expence_category_0').attr('checked', 'True')
+    $('#id_expence_way_0').attr('checked', 'True')
+  })
+  </script>
+
+{%endblock script%}
 
 
 

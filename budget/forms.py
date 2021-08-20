@@ -1,13 +1,11 @@
 from django import forms
-from django.forms import widgets
-from django.forms.widgets import RadioSelect
 from . models import Expence, Income, ExpenceCategory, ExpenceWay, IncomeCategory
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
-from django.forms.utils import ErrorList
 class IncomeCategoryForm (forms.ModelForm):
     class Meta:
         model = IncomeCategory
@@ -67,7 +65,15 @@ class AddExpenceForm (forms.ModelForm):
         super(AddExpenceForm, self).__init__(*args,**kwargs)
         self.fields ['expence_category'].queryset = ExpenceCategory.objects.filter(user=user)
         self.fields ['expence_way'].queryset = ExpenceWay.objects.filter(user=user)
+    
+    def clean_ammount(self):
+        data = self.cleaned_data['ammount']
 
+        #check if given ammount is greater than 0
+        if data <= 0:
+            raise ValidationError(_("Podana kwota musi być większa od zera"), code='invalid')
+
+        return data
 
 class AddIncomeForm (forms.ModelForm):
     class Meta:
@@ -89,7 +95,16 @@ class AddIncomeForm (forms.ModelForm):
     def __init__(self,user, *args, **kwargs):
         super(AddIncomeForm, self).__init__(*args,**kwargs)
         self.fields ['income_category'].queryset = IncomeCategory.objects.filter(user=user)
+    
+    def clean_ammount(self):
+        data = self.cleaned_data['ammount']
 
+        #check if given ammount is greater than 0
+        if data <= 0:
+            raise ValidationError(_("Podana kwota musi być większa od zera"), code='invalid')
+
+        return data
+        
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'input-field','placeholder': 'email'}),)
 
