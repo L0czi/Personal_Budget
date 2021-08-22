@@ -6,49 +6,69 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Sum
 
+
+@login_required
+def index(request):
+
+    return render (request, 'budget/index.html')
+
 @login_required
 def balance(request):
-    # All expences for currently log user
+    '''User Expence data'''
+    # Querry all expence categorys assigned to currently log user
     all_expences_categorys = ExpenceCategory.objects.filter(user=request.user)
+    # Create a lits of all categorys id 
+    all_expences_categorys_id = [all_expences_categorys[i].id for i in range(0,len(all_expences_categorys))]
+    # Querry all user expence wich match user expence category id sorted by last added
+    all_expences = Expence.objects.filter(expence_category__in=all_expences_categorys_id).order_by('-date', '-id')
 
     # All expences aggragate by category for currently log user
-    aggr_exp_category_query = [Expence.objects
-        .filter(
-            user=request.user, 
+    aggr_exp_query = [Expence.objects
+        .filter( 
             expence_category=expence_category)
-        .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in all_expences_categorys]
+        .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in all_expences_categorys_id]
+    
+    # Create a tuple - (expence category name, summary expence for category)
+    aggr_expences = list(zip(all_expences_categorys, aggr_exp_query))
 
-    # (expence category name, summary expence for category)
-    aggr_exp_category = list(zip(all_expences_categorys, aggr_exp_category_query))
-
-    # Sum of all expence
-    aggr_expences_query = Expence.objects.filter(user=request.user).aggregate(Sum('ammount'))
-    aggr_expences = aggr_expences_query['ammount__sum']
-
-    # all incomes for currently log user
+    '''User Income data'''
+    # Querry all income categorys assigned to currently log user
     all_incomes_categorys = IncomeCategory.objects.filter(user=request.user)
+    # Create a lits of all categorys id 
+    all_incomes_categorys_id = [all_incomes_categorys[i].id for i in range(0,len(all_incomes_categorys))]
+    # Querry all user expence wich match user expence category id sorted by last added
+    all_incomes = Income.objects.filter(income_category__in=all_incomes_categorys_id).order_by('-date', '-id')
 
     #All incomes aggragate by category for currently log user
-    aggr_inc_category_query = [Income.objects
+    aggr_incomes_query = [Income.objects
         .filter(
-            user=request.user, 
             income_category=income_category)
-        .aggregate(Sum('ammount'))['ammount__sum'] for income_category in all_incomes_categorys]
+        .aggregate(Sum('ammount'))['ammount__sum'] for income_category in all_incomes_categorys_id]
 
-    aggr_inc_category = list(zip(all_incomes_categorys, aggr_inc_category_query))
+    aggr_incomes = list(zip(all_incomes_categorys, aggr_incomes_query))
 
-    aggr_incomes_query = Income.objects.filter(user=request.user).aggregate(Sum('ammount'))
-    aggr_incomes = aggr_incomes_query['ammount__sum']
-
-    #balance = aggr_income - aggr_expence
+    '''Balance'''
+    #Sum all expences
+    aggr_all_expences = all_expences.aggregate(Sum('ammount'))['ammount__sum']
+    #Sum all incomes
+    aggr_all_incomes = all_incomes.aggregate(Sum('ammount'))['ammount__sum']
+    #Balance
+    if aggr_all_incomes == None:
+        aggr_all_incomes = 0
+    
+    if aggr_all_expences == None:
+        aggr_all_expences = 0
+        
+    balance = aggr_all_incomes - aggr_all_expences
 
     context = {
-        'all_expences_categorys': all_expences_categorys,
-        'all_incomes_categorys' : all_incomes_categorys,
-        'aggr_exp_category': aggr_exp_category,
-        'aggr_inc_category': aggr_inc_category,
         'aggr_expences': aggr_expences,
-        'aggr_incomes' : aggr_incomes,
+        'aggr_all_expences':aggr_all_expences,
+        'all_expences': all_expences,
+        'aggr_incomes': aggr_incomes,
+        'aggr_all_incomes':aggr_all_incomes,
+        'all_incomes': all_incomes,
+        'balance':balance,
     }
 
     return render(request,'budget/balance.html', context)
@@ -59,6 +79,10 @@ def create_income(request):
         form = AddIncomeForm(request.user, request.POST)
         if form.is_valid():
             income = form.save(commit=False)
+
+            if income.notes.isspace() or len(income.notes)==0:
+                income.notes = 'Nie dodano notatki'
+
             add_income = Income.objects.create(
 
             user=request.user,  
@@ -87,6 +111,10 @@ def create_expence(request):
         form = AddExpenceForm(request.user, request.POST)
         if form.is_valid():
             expence = form.save(commit=False)
+
+            if expence.notes.isspace() or len(expence.notes)==0:
+                expence.notes = 'Nie dodano notatki'
+
             add_expence = Expence.objects.create(
             
             user=request.user, 
@@ -109,10 +137,6 @@ def create_expence(request):
     
     return render(request,'budget/expence_form.html',context)
 
-@login_required
-def index(request):
-
-    return render (request, 'budget/index.html')
 
 
 def add_category(form, model, request):
@@ -213,6 +237,7 @@ def income_category_update (request, name):
     
     return render(request,'budget/category_update.html',context)
 
+
 @login_required
 def way_category_update (request, name):
     if request.method == 'POST':
@@ -234,7 +259,7 @@ def way_category_update (request, name):
     }
     
     return render(request,'budget/category_update.html',context)
-    
+
 def register(request):
     
     if request.user.is_authenticated:

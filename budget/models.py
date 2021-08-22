@@ -26,6 +26,7 @@ class Expence (models.Model):
     date = models.DateField(default=now, blank=True)
     notes = models.CharField(max_length=100, blank=True)
 
+    
     def __str__ (self):
         return f'{self.user}: {self.expence_category}, {self.expence_way}, {self.ammount}'  
 
@@ -44,5 +45,9 @@ class Income (models.Model):
     ammount = models.DecimalField(max_digits=8, decimal_places=2)
     date = models.DateField(default=now, blank=True)
     notes = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ['-date']
+
     def __str__ (self):
         return f'{self.user}: {self.income_category}, {self.ammount}, {self.date}'  

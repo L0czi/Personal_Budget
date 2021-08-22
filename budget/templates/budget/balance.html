@@ -4,39 +4,122 @@
 <section>
     <div class="container bg-main"">
         <div class="row">
-            
             <div class="col-md-6">
                 <!--All expences grouped by category-->
-                <h5 class=" mt-2 mb-2">Wydatki Łącznie: {{aggr_expences}}</h5>
-                </ul class="list-group">
-                    {% for name, ammount in aggr_exp_category %}
+                <h5 class=" mt-2 mb-2">Wydatki Łącznie: {{aggr_all_expences}}</h5>
+                {% if aggr_all_expences > 0 %}
+                <ul class="list-group">
+                    {% for name, ammount in aggr_expences %}
                         {% if ammount != None %}
-                    <li class="list-group-item d-flex">
-                        <span class="mr-auto" style="color: black;">{{name}}</span>
-                        <span class="mr-2" style="color: black;">{{ammount}}</span>
-                        <div <a class='btn btn-secondary btn-sm' href="#">Szczegóły</a></div>
-                    </li>
+                            <li class="list-group-item d-flex">
+                                <span class="mr-auto" style="color: black;">{{name}}</span>
+                                <span class="mr-2" style="color: black;">{{ammount}}</span>
+                                <!-- Modal button -->
+                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#{{name}}Modal">Szczegóły</a></div>
+                            </li>
+                            <!-- Modal -->
+                            <div style='color:black' class="modal fade" id="{{name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="{{name}}ModalLabel">{{name}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul class="list-group">
+                                                {% for element in all_expences %}
+                                                    {% if element.expence_category == name %}
+                                                        <li class="list-group-item d-flex flex-column flex-sm-row align-items-center">
+                                                            <span class="mr-sm-auto">{{element.expence_way}}</span>
+                                                            <div class="mr-3">
+                                                                <span class="mr-3">{{element.ammount}}</span>
+                                                                <span>{{element.date|date:"d.m.y"}}</span>
+                                                            </div>
+                                                            <div class="mr-2">
+                                                                <button type="button" class="btn btn-secondary btn-sm far fa-sticky-note" data-toggle="popover" data-placement="top" data-content="{{element.notes}}"></button>
+                                                                <button name="#" type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
+                                                            </div>
+                                                        </li>
+                                                    {%endif%}
+                                                {%endfor%}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         {%endif%}
                     {%endfor%}
-                </ulv>
-
+                </ul>
+                {% else %}
+                            <p>Nie dodano wydatku! Dodaj swój pierwszy wydatek w zakładce "WYDATEK"</p>
+                {%endif%}
+    
                 <!--All incomes grouped by category-->
-                <h5 class=" mt-2 mb-2">Przychody Łącznie: {{aggr_incomes}}</h5>
-                </ul class="list-group">
-                    {% for name, ammount in aggr_inc_category %}
+                <h5 class=" mt-2 mb-2">Przychody Łącznie: {{aggr_all_incomes}}</h5>
+                {% if aggr_all_incomes > 0 %}
+                <ul class="list-group">
+                    {% for name, ammount in aggr_incomes %}
                         {% if ammount != None %}
-                    <li class="list-group-item d-flex">
-                        <span class="mr-auto" style="color: black;">{{name}}</span>
-                        <span class="mr-2" style="color: black;">{{ammount}}</span>
-
-                        <div <a class='btn btn-secondary btn-sm' href="#">Szczegóły</a></div>
-                    </li>
+                            <li class="list-group-item d-flex">
+                                <span class="mr-auto" style="color: black;">{{name}}</span>
+                                <span class="mr-2" style="color: black;">{{ammount}}</span>
+                                <!-- Modal button -->
+                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#{{name}}Modal">Szczegóły</a></div>
+                            </li>
+                            <!-- Modal -->
+                            <div style='color:black' class="modal fade" id="{{name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="{{name}}ModalLabel">{{name}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul class="list-group">
+                                                {% for element in all_incomes %}
+                                                    {% if element.income_category == name %}
+                                                        <li class="list-group-item d-flex flex-column flex-sm-row align-items-center justify-content-end">
+                                                            <div class="mr-3">
+                                                                <span class="mr-3">{{element.ammount}}</span>
+                                                                <span>{{element.date|date:"d.m.y"}}</span>
+                                                            </div>
+                                                            <div class="mr-2">
+                                                                <button type="button" class="btn btn-secondary btn-sm far fa-sticky-note" data-toggle="popover" data-placement="top" data-content="{{element.notes}}"></button>
+                                                                <button name="#" type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
+                                                            </div>
+                                                        </li>
+                                                    {%endif%}
+                                                {%endfor%}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         {%endif%}
                     {%endfor%}
-                </ulv>
+                </ul>
                 <br>
+                {% else %}
+                            <p>Nie dodano przychodu! Dodaj swój pierwszy wydatek w zakładce "PRZYCHÓD"</p>
+                {%endif%}
+                <h3>Bilans: {{balance}}</h3>
+            </div>
+            <div style="background-color: grey;" class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+                <label>PLACEHOLDER</label>
+                <img src="https://cdn.corporatefinanceinstitute.com/assets/line-graph.jpg" height="200px" width="350px" alt="placeholder for real graph">
             </div>
         </div>
     </div>
 </section>
 {% endblock content %}
+{%block script%}
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+</script>
+{%endblock script%}
