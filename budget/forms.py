@@ -14,8 +14,14 @@ class IncomeCategoryForm (forms.ModelForm):
             'name':(''),
         }
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria'}),
+            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria', 'id':'input-category'}),
         }
+    
+    def clean_name(self):
+        data = self.cleaned_data['name'].title()
+        if len(data) > 15:
+            data = data[0:15]
+        return data 
 
 class ExpenceCategoryForm (forms.ModelForm):
     class Meta:

@@ -18,7 +18,7 @@
       </div>
       <div class="js_toggle_group" style="display: none;">
         {% if income_cat %}
-        <ul class="list-group">
+        <ul id="incomes-categorys-list" class="list-group">
           {% for element in income_cat %}
           <li class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
@@ -26,7 +26,7 @@
           </li>
           {% endfor %}
           <li class="list-group-item d-flex justify-content-end">
-            <form action="" method="post">{% csrf_token %}
+            <form id='addIncomeForm' method="post">{% csrf_token %}
               <div class="btn-group">
                 {{form_add_in_cat.name|as_crispy_field}}
                 <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
@@ -106,6 +106,7 @@
     })
   })
   </script>
+  <script src="{% static 'budget/settings.js' %}"></script>
 
 {%endblock script%}
 

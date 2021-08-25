@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.http import JsonResponse
+from django.core import serializers
+
 
 
 @login_required
@@ -137,61 +140,119 @@ def create_expence(request):
     
     return render(request,'budget/expence_form.html',context)
 
+@login_required
+def settings(request):
+    income_category = IncomeCategory.objects.filter(user=request.user)
+    form = IncomeCategoryForm(request.POST or None)
+    data = {}
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            category = form.save(commit=False)
+
+            if IncomeCategory.objects.filter(user=request.user, name=category.name):
+                data['error'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+                data['status'] = 'nok'
+                return JsonResponse(data)
+
+            else:
+                new_category = IncomeCategory.objects.create(user=request.user, name=category.name)
+                new_category.save()
+                data['name'] = form.cleaned_data.get('name')
+                data['status'] = 'ok'
+                return JsonResponse(data)
+
+    context = {
+    #'form_add_ex_cat':form_add_ex_cat,
+    'form_add_in_cat':form,
+    #'form_add_way':form_add_way,
+    #'expence_cat':expence_cat,
+    #'expence_way':expence_way,
+    'income_cat':income_category,
+    }
+    
+    return render(request, 'budget/settings.html', context)
+
+    
 
 
-def add_category(form, model, request):
-    category = form.save(commit=False)
-    #check if user already have a category with given name
-    if model.objects.filter(user=request.user, name=category.name[0:15].title()):
-        messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
-    else:
-        new_category = model.objects.create(user=request.user, name=category.name[0:15].title())
-        new_category.save()
+'''
+@login_required
+def add_income_category(request):
+    if request.method == 'POST':
+
+        form = IncomeCategoryForm(request.POST)
+
+        if form.is_valid():
+            category = form.save()
+            cat_ser = serializers.serialize('jason', [category])
+            return JsonResponse({'category':cat_ser}, status=200)
+            
+            
+            #check if user already have a category with given name
+            if IncomeCategory.objects.filter(user=request.user, name=category.name[0:15].title()):
+                messages.warning(request, f'Błąd! Kategoria "{category.title()}" już istnieje!!')
+            else:
+                new_category = IncomeCategory.objects.create(user=request.user, name=category.name[0:15].title())
+                new_category.save()
+                return redirect('settings')
+            
+        else:
+            # some form errors occured.
+            return JsonResponse({"error": "a"}, status=400)
+
+    return JsonResponse({"error": "b"}, status=400)
 
 @login_required
 def settings (request):
 
-    if request.method == 'POST' and "add_expence_category" in request.POST:
-        form_add_ex_cat = ExpenceCategoryForm(request.POST)
+    #expence_cat = ExpenceCategory.objects.filter(user = request.user)
+    #form_add_ex_cat = ExpenceCategoryForm()
+    
+    income_cat = IncomeCategory.objects.filter(user = request.user)
+    form_add_in_cat = IncomeCategoryForm()
 
-        if form_add_ex_cat.is_valid():
-            add_category(form=form_add_ex_cat, model=ExpenceCategory, request=request)
-            return redirect('settings')
-
-    elif request.method == 'POST' and "add_income_category" in request.POST:
-        form_add_in_cat = IncomeCategoryForm(request.POST)
-
-        if form_add_in_cat.is_valid():
-            add_category(form=form_add_in_cat, model=IncomeCategory, request=request)
-            return redirect('settings')
-
-    elif request.method == 'POST' and "add_expence_way" in request.POST:
-        form_add_way = WayCategoryForm(request.POST)
-
-        if form_add_way.is_valid():
-            add_category(form=form_add_way, model=ExpenceWay, request=request)
-            return redirect('settings')
-
-    else:
-        expence_cat = ExpenceCategory.objects.filter(user = request.user)
-        form_add_ex_cat = ExpenceCategoryForm()
-
-        income_cat = IncomeCategory.objects.filter(user = request.user)
-        form_add_in_cat = IncomeCategoryForm()
-
-        expence_way = ExpenceWay.objects.filter(user = request.user)
-        form_add_way = WayCategoryForm()
+    #expence_way = ExpenceWay.objects.filter(user = request.user)
+    #form_add_way = WayCategoryForm()
 
     context = {
-        'form_add_ex_cat':form_add_ex_cat,
-        'form_add_in_cat':form_add_in_cat,
-        'form_add_way':form_add_way,
-        'expence_cat':expence_cat,
-        'expence_way':expence_way,
-        'income_cat':income_cat,
+    #'form_add_ex_cat':form_add_ex_cat,
+    'form_add_in_cat':form_add_in_cat,
+    #'form_add_way':form_add_way,
+    #'expence_cat':expence_cat,
+    #'expence_way':expence_way,
+    'income_cat':income_cat,
     }
     return render(request, 'budget/settings.html', context)
 
+    
+    if request.method == 'POST': #and "add_expence_category" in request.POST:
+        form = IncomeCategoryForm(request.POST)
+
+        if form.is_valid():
+            add_category(form=form, model=IncomeCategory, request=request)
+            return redirect('settings')
+
+        
+        form_add_ex_cat = ExpenceCategoryForm(request.POST)    
+        if form_add_ex_cat.is_valid():
+            add_category(form=form_add_ex_cat, model=ExpenceCategory, request=request)
+            return redirect('settings')
+       
+        elif request.method == 'POST' and "add_income_category" in request.POST:
+            form_add_in_cat = IncomeCategoryForm(request.POST)
+
+            if form_add_in_cat.is_valid():
+                add_category(form=form_add_in_cat, model=IncomeCategory, request=request)
+                return redirect('settings')
+
+        elif request.method == 'POST' and "add_expence_way" in request.POST:
+            form_add_way = WayCategoryForm(request.POST)
+
+            if form_add_way.is_valid():
+                add_category(form=form_add_way, model=ExpenceWay, request=request)
+                return redirect('settings')
+'''
 @login_required
 def expence_category_update (request, name):
     if request.method == 'POST':
