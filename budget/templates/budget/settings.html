@@ -14,6 +14,27 @@
 {% block content %}
 
 <section class='mt-3'>
+  <!--DELETE MODAL-->
+  <div id=deleteConfModal class="modal fade bd-delete-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Uwaga!</h5>
+        </div>
+        <div class="modal-body">
+        <p></p>
+        </div>
+        <div class="modal-footer">
+          <form id='deleteCategoryForm' class="mr-2" method="POST">
+            {% csrf_token %}
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Wróć</button>
+          <button id='deleteCategoryButton' name="#" type="submit" class="btn btn-danger btn-sm">Usuń</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!--INCOMES-->
   <div class='container'>
     <div class="offset-xl-3 offset-lg-2 offset-md-1 col-xl-6 col-lg-8 col-md-10 col-12 mb-3">
@@ -24,12 +45,9 @@
         {% if income_cat %}
         <ul id="incomes-categorys-list" class="list-group">
           {% for element in income_cat %}
-          <li class="list-group-item d-flex">
+          <li id='line{{element.id}}' class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
-            <form class="mr-2" method="POST" action="{% url 'income-category-delete' element.id %}">
-              {% csrf_token %}
-              <button id='incomeCategoryDeletebutton{{element.id}}' name="delete_income_category" type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
-           </form>
+            <button type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='incomes' data-name='{{element.name}}' data-url="{% url 'income-category-delete' element.id %}"></button>
             <div><a class='btn btn-secondary btn-sm far fa-edit' href="{% url 'settings-inc-cat-update' element.name %}"></a></div>
           </li>
           {% endfor %}
