@@ -6,8 +6,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import JsonResponse
-from django.core import serializers
 
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
+
+
+class IncomeCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
+    model = IncomeCategory
+    success_url = reverse_lazy('settings')
 
 
 @login_required
@@ -151,14 +158,14 @@ def settings(request):
             category = form.save(commit=False)
 
             if IncomeCategory.objects.filter(user=request.user, name=category.name):
-                data['error'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
-                data['status'] = 'nok'
-                return JsonResponse(data)
+                data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+                return JsonResponse(data, status=400)
 
             else:
                 new_category = IncomeCategory.objects.create(user=request.user, name=category.name)
                 new_category.save()
                 data['name'] = form.cleaned_data.get('name')
+                data['id'] = new_category.id
                 data['status'] = 'ok'
                 return JsonResponse(data)
 
@@ -173,7 +180,6 @@ def settings(request):
     
     return render(request, 'budget/settings.html', context)
 
-    
 
 
 '''
