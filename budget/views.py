@@ -166,8 +166,8 @@ def settings(request):
                 new_category.save()
                 data['name'] = form.cleaned_data.get('name')
                 data['id'] = new_category.id
-                data['status'] = 'ok'
-                return JsonResponse(data)
+                data['succesText'] = f'Dodano nową kategorię - "{new_category.name}"'
+                return JsonResponse(data, status=200)
 
     context = {
     #'form_add_ex_cat':form_add_ex_cat,
@@ -180,7 +180,28 @@ def settings(request):
     
     return render(request, 'budget/settings.html', context)
 
+@login_required
+def income_category_update (request, pk):
 
+    form = IncomeCategoryForm(request.POST or None, instance=IncomeCategory.objects.filter(user=request.user, id=pk).first())
+    data = {}
+
+    if request.method == 'POST':
+        if form.is_valid():
+            category = form.save(commit=False)
+
+            if IncomeCategory.objects.filter(user=request.user, name=category.name):
+                data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+                return JsonResponse(data, status=400)
+            
+            else:
+                category.save()
+                data['name'] = form.cleaned_data.get('name')
+                return JsonResponse(data)
+    else:
+        category = IncomeCategory.objects.filter(user=request.user, id=pk).first()
+        data['name'] = category.name
+        return JsonResponse(data)
 
 '''
 @login_required
@@ -281,28 +302,6 @@ def expence_category_update (request, name):
     
     return render(request,'budget/category_update.html',context)
 
-
-@login_required
-def income_category_update (request, name):
-    if request.method == 'POST':
-        form = IncomeCategoryForm(request.POST, instance=IncomeCategory.objects.filter(user=request.user, name=name).first())
-        if form.is_valid():
-            category = form.save(commit=False)
-
-            if IncomeCategory.objects.filter(user=request.user, name=category.name.title()):
-                messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
-            else:
-                category.name = category.name[0:15]
-                category.save()
-            return redirect('settings')
-    else:
-       form = IncomeCategoryForm(instance=IncomeCategory.objects.filter(user=request.user, name=name).first())
-
-    context = {
-        'form': form,
-    }
-    
-    return render(request,'budget/category_update.html',context)
 
 
 @login_required

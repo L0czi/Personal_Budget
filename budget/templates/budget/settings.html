@@ -12,11 +12,29 @@
 
 
 {% block content %}
-
 <section class='mt-3'>
+  <!--EDIT MODAL-->
+  <div id="editModal" class="modal fade bd-edit-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edytuj</h5>
+        </div>
+        <form id='editCategoryForm' method="POST">
+          <div class="modal-body">
+            <input id="editCategoryFormInput" type="text" class="form-control">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Wróć</button>
+            <button id="editCategoryButton" name="#" type="submit" class="btn btn-primary btn-sm">Zapisz</button>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
   <!--DELETE MODAL-->
   <div id=deleteConfModal class="modal fade bd-delete-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="deleteModalLabel">Uwaga!</h5>
@@ -34,7 +52,6 @@
       </div>
     </div>
   </div>
-
   <!--INCOMES-->
   <div class='container'>
     <div class="offset-xl-3 offset-lg-2 offset-md-1 col-xl-6 col-lg-8 col-md-10 col-12 mb-3">
@@ -47,12 +64,12 @@
           {% for element in income_cat %}
           <li id='line{{element.id}}' class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
-            <button type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='incomes' data-name='{{element.name}}' data-url="{% url 'income-category-delete' element.id %}"></button>
-            <div><a class='btn btn-secondary btn-sm far fa-edit' href="{% url 'settings-inc-cat-update' element.name %}"></a></div>
+            <button id='deleteCategoryButton{{element.id}}' type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='incomes' data-urledit="{% url 'income-category-update' element.id %}" data-urldelete="{% url 'income-category-delete' element.id %}"></button>
+            <button id="editCategoryButton{{element.id}}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id='{{element.id}}'data-type='incomes' data-url="{% url 'income-category-update' element.id %}"></button>
           </li>
           {% endfor %}
           <li class="list-group-item d-flex justify-content-end">
-            <form id='addIncomeForm' method="post">{% csrf_token %}
+            <form id="addIncomeCategoryForm" method="post">{% csrf_token %}
               <div class="btn-group">
                 {{form_add_in_cat.name|as_crispy_field}}
                 <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
@@ -121,64 +138,9 @@
     </div>
   </div>
 </section>
-
 {% endblock content %}
 {%block script%}
-
-<script>
-  $(document).ready(function(){
-    $('button.js_button').click(function(){
-      $(this).parent().next('div.js_toggle_group').slideToggle(150);
-    })
-  })
-  </script>
-  <script src="{% static 'budget/settings.js' %}"></script>
-
+<script src="{% static 'budget/settings.js' %}"></script>
+<script src="{% static 'budget/addIncomes.js' %}"></script>
+ 
 {%endblock script%}
-
-
-adsd
-
-
-
-<h1>Przychody</h1>
-  {% if income_cat %}
-  <ul class="list-group">
-    {% for element in income_cat %}
-      <li class="list-group-item">
-       {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-inc-cat-update' element.name %}">Edytuj</a>
-      </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-    <p>There are no category in db.</p>
-  {% endif %}
-
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form_add_in_cat.as_table }}
-    </table>
-    <input type="submit" value="Dodaj" name="add_income_category">
-  </form>
-
-  <h1>Płatności</h1>
-  {% if expence_way %}
-  <ul class="list-group">
-    {% for element in expence_way %}
-      <li class="list-group-item">
-        {{ element.name }} <a class='btn btn-secondary' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a>
-      </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-    <p>There are no category in db.</p>
-  {% endif %}
-
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form_add_way.as_table }}
-    </table>
-    <input type="submit" value="Dodaj" name="add_expence_way">
-  </form>

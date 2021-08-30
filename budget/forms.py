@@ -14,7 +14,7 @@ class IncomeCategoryForm (forms.ModelForm):
             'name':(''),
         }
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria', 'id':'input-category'}),
+            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria', 'id':'addIncomeCategoryInput'}),
         }
     
     def clean_name(self):

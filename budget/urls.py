@@ -5,11 +5,13 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('settings/', views.settings, name='settings'),
     
-    path('e_exp_category/<str:name>',views.expence_category_update, name='settings-exp-cat-update'),
-    path('e_inc_category/<str:name>',views.income_category_update, name='settings-inc-cat-update'),
-    path('e_way_category/<str:name>',views.way_category_update, name='settings-way-cat-update'),
+    path('expence_category/<int:pk>/update',views.expence_category_update, name='expence-category-update'),
+    path('income_category/<int:pk>/update',views.income_category_update, name='income-category-update'),
+    path('expence_way_category/<int:pk>/update',views.way_category_update, name='expence-way-category-update'),
 
-     path('budget/<int:pk>/delete', views.IncomeCategoryDeleteView.as_view(), name='income-category-delete'),
+     #path('expence_category/<int:pk>/delete', views.IncomeCategoryDeleteView.as_view(), name='expence-category-delete'),
+     path('income_category/<int:pk>/delete', views.IncomeCategoryDeleteView.as_view(), name='income-category-delete'),
+     #path('expence_way_category/<int:pk>/delete', views.IncomeCategoryDeleteView.as_view(), name='expence-way-category-delete'),
 
     path('expence/', views.create_expence, name = 'create-expence'),
     path('income/', views.create_income, name='create-income'),
