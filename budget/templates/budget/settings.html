@@ -59,7 +59,7 @@
         <button class="mb-2 castom-btn js_button shadow">Przychody</button>
       </div>
       <div class="js_toggle_group" style="display: none;">
-        <ul id="incomes-categorys-list" class="list-group">
+        <ul id="incomes-categories-list" class="list-group">
           {% if incomes_categories %}
             {% for element in incomes_categories %}
           <li id='line{{element.id}}' class="list-group-item d-flex">
@@ -88,7 +88,7 @@
         <button class="mb-2 castom-btn js_button shadow">Wydatki</button>
       </div>
       <div class="js_toggle_group" style="display: none;">
-        <ul id="expences-categorys-list" class="list-group">
+        <ul id="expences-categories-list" class="list-group">
           {% if expences_categories %}
             {% for element in expences_categories %}
           <li id='line{{element.id}}' class="list-group-item d-flex">
@@ -117,24 +117,25 @@
         <button class="mb-2 castom-btn js_button shadow">Płatności</button>
       </div>
       <div class="js_toggle_group" style="display: none;">
-        {% if expence_way %}
-        <ul class="list-group">
-          {% for element in expence_way %}
-          <li class="list-group-item d-flex">
+        <ul id="ways-categories-list" class="list-group">
+          {% if expences_ways %}
+            {% for element in expences_ways %}
+          <li id='line{{element.id}}' class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
-            <div><a class='btn btn-secondary btn-sm' href="{% url 'settings-way-cat-update' element.name %}">Edytuj</a></div>
+            <button id="deleteCategoryButton{{element.id}}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='ways' data-urledit="{% url 'expence-way-category-update' element.id %}" data-urldelete="{% url 'expence-way-category-delete' element.id %}"></button>
+            <button id="editCategoryButton{{element.id}}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id='{{element.id}}' data-type='ways' data-url="{% url 'expence-way-category-update' element.id %}"></button>
           </li>
-          {% endfor %}
+            {% endfor %}
+          {% endif %}
           <li class="list-group-item d-flex justify-content-end">
-            <form action="" method="post">{% csrf_token %}
+            <form id="addExpenceWayForm" method="post">{% csrf_token %}
               <div class="btn-group">
-                {{form_add_way.name|as_crispy_field}}
-                <button name="add_expence_way" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                {{expence_way_form.name|as_crispy_field}}
+                <button id="addExpenceWayButton" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
               </div>
             </form>
           </li>
         </ul>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -144,5 +145,6 @@
 <script src="{% static 'budget/settings.js' %}"></script>
 <script src="{% static 'budget/addIncomes.js' %}"></script>
 <script src="{% static 'budget/addExpences.js' %}"></script>
+<script src="{% static 'budget/addExpencesWays.js' %}"></script>
  
 {%endblock script%}

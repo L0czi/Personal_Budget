@@ -7,8 +7,8 @@ $(document).ready( () =>{
     const $alert = $('#alert-ribbon');
 
     const appendUl = (response) => {
-        var $incomesUl = $("#incomes-categorys-list li:nth-last-child(1)"); //pic last income category before form
-        $incomesUl.before(`<li id=line${response.id} class="list-group-item d-flex">
+        var $elementUl = $("#incomes-categories-list li:nth-last-child(1)"); //pic last income category before form
+        $elementUl.before(`<li id=line${response.id} class="list-group-item d-flex">
                         <span class="mr-auto">${response.name}</span>
                         <button id="deleteCategoryButton${response.id}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id=${response.id} data-type='incomes' data-urledit=/budget/income_category/${response.id}/update data-urldelete=/budget/income_category/${response.id}/delete></button>
                         <button id="editCategoryButton${response.id}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id=${response.id} data-type='incomes' data-url=/budget/income_category/${response.id}/update></button>

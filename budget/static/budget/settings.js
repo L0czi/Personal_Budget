@@ -48,14 +48,14 @@ $(document).ready( () =>{
 
 
     const clearUl = (id, type)=> {
-        var $incomesUl = $(`#${type}-categorys-list`);
-        element = $incomesUl.find(`#line${id}`)
+        var $elementUl = $(`#${type}-categories-list`);
+        element = $elementUl.find(`#line${id}`)
         element.remove()
     }
 
     const updateUl = (id, type, response) =>{
-        var $incomesUl = $(`#${type}-categorys-list`);
-        element = $incomesUl.find(`#line${id} span:first-child`);
+        var $elementUl = $(`#${type}-categories-list`);
+        element = $elementUl.find(`#line${id} span:first-child`);
         element.text(response.name);
     }
 

@@ -1,17 +1,17 @@
 $(document).ready( () =>{
 
-    const addExpenceCategoryForm = document.getElementById('addExpenceCategoryForm'); //
-    const addExpenceCategoryButton = document.getElementById('addExpenceCategoryButton');
-    const name = document.getElementById('addExpenceCategoryInput'); //new input category pass by user in <input> field
+    const addExpenceWayForm = document.getElementById('addExpenceWayForm'); //
+    const addExpenceWayButton = document.getElementById('addExpenceWayButton');
+    const name = document.getElementById('addExpenceWayInput'); //new input category pass by user in <input> field
     const csrf = document.getElementsByName('csrfmiddlewaretoken');
     const $alert = $('#alert-ribbon');
 
     const appendUl = (response) => {
-        var $elementUl = $("#expences-categories-list li:nth-last-child(1)"); //pic last income category before form
+        var $elementUl = $("#ways-categories-list li:nth-last-child(1)"); //pic last income category before form
         $elementUl.before(`<li id=line${response.id} class="list-group-item d-flex">
                         <span class="mr-auto">${response.name}</span>
-                        <button id="deleteCategoryButton${response.id}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id=${response.id} data-type='expences' data-urledit=/budget/expence_category/${response.id}/update data-urldelete=/budget/expence_category/${response.id}/delete></button>
-                        <button id="editCategoryButton${response.id}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id=${response.id} data-type='expences' data-url=/budget/expence_category/${response.id}/update></button>
+                        <button id="deleteCategoryButton${response.id}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id=${response.id} data-type='ways' data-urledit=/budget/expence_way/${response.id}/update data-urldelete=/budget/expence_way/${response.id}/delete></button>
+                        <button id="editCategoryButton${response.id}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id=${response.id} data-type='ways' data-url=/budget/expence_way/${response.id}/update></button>
                     </li>`);
     }
     const messageHandler = (message, type)=> {
@@ -20,15 +20,14 @@ $(document).ready( () =>{
     }
 
     //ADD NEW CATEGORY
-    addExpenceCategoryForm.addEventListener('submit', e=>{
+    addExpenceWayForm.addEventListener('submit', e=>{
         e.preventDefault()
 
         const fd = new FormData()
 
         fd.append('csrfmiddlewaretoken', csrf[0].value)
         fd.append('name', name.value)
-        fd.append('addExpenceCategoryButton', addExpenceCategoryButton.id)
-
+        fd.append('addExpenceWayButton', addExpenceWayButton.id)
         $.ajax({
             type : 'POST',
             url : '/budget/settings/',
@@ -39,7 +38,7 @@ $(document).ready( () =>{
                     $alert.empty();
                 },3000);
                 appendUl(response); //append new line to unordered list
-                addExpenceCategoryForm.reset();
+                addExpenceWayForm.reset();
                 
             },
             error: function(error){
@@ -47,7 +46,7 @@ $(document).ready( () =>{
                 setTimeout(()=>{
                     $alert.empty();
                 },3000);
-                addExpenceCategoryForm.reset();
+                addExpenceWayForm.reset();
             },
             caches: false,
             contentType: false,

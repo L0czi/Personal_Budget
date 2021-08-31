@@ -4,11 +4,10 @@ from . forms import AddExpenceForm, UserRegisterForm, ExpenceCategoryForm,  WayC
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
-
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 
 
@@ -18,6 +17,10 @@ class IncomeCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
 
 class ExpenceCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
     model = ExpenceCategory
+    success_url = reverse_lazy('settings')
+
+class ExpenceWayCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
+    model = ExpenceWay
     success_url = reverse_lazy('settings')
 
 
@@ -159,6 +162,9 @@ def settings(request):
     expences_categories = ExpenceCategory.objects.filter(user=request.user)
     expence_category_form = ExpenceCategoryForm(request.POST or None)
 
+    expences_ways = ExpenceWay.objects.filter(user=request.user)
+    expence_way_form = WayCategoryForm(request.POST or None)
+
     data = {}
     
     if request.method == 'POST' and 'addIncomeCategoryButton' in request.POST:
@@ -192,12 +198,30 @@ def settings(request):
                 data['id'] = new_category.id
                 data['succesText'] = f'Dodano nową kategorię - "{new_category.name}"'
                 return JsonResponse(data, status=200)
+    
+    elif request.method == 'POST' and 'addExpenceWayButton' in request.POST:
+        if expence_way_form.is_valid():
+            category = expence_way_form.save(commit=False)
+
+            if ExpenceWay.objects.filter(user=request.user, name=category.name):
+                data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+                return JsonResponse(data, status=400)
+
+            else:
+                new_category = ExpenceWay.objects.create(user=request.user, name=category.name)
+                new_category.save()
+                data['name'] = expence_way_form.cleaned_data.get('name')
+                data['id'] = new_category.id
+                data['succesText'] = f'Dodano nową kategorię - "{new_category.name}"'
+                return JsonResponse(data, status=200)
 
     context = {
     'income_category_form':income_category_form,
     'expence_category_form':expence_category_form,
+    'expence_way_form':expence_way_form,
     'incomes_categories':incomes_categories,
     'expences_categories':expences_categories,
+    'expences_ways':expences_ways,
     }
     
     return render(request, 'budget/settings.html', context)
@@ -219,11 +243,11 @@ def income_category_update (request, pk):
             else:
                 category.save()
                 data['name'] = form.cleaned_data.get('name')
-                return JsonResponse(data)
+                return JsonResponse(data, status=200)
     else:
         category = IncomeCategory.objects.filter(user=request.user, id=pk).first()
         data['name'] = category.name
-        return JsonResponse(data)
+        return JsonResponse(data, status=200)
 
 @login_required
 def expence_category_update (request, pk):
@@ -242,110 +266,34 @@ def expence_category_update (request, pk):
             else:
                 category.save()
                 data['name'] = form.cleaned_data.get('name')
-                return JsonResponse(data)
+                return JsonResponse(data, status=200)
     else:
         category = ExpenceCategory.objects.filter(user=request.user, id=pk).first()
         data['name'] = category.name
-        return JsonResponse(data)
-'''
+        return JsonResponse(data, status=200)
+
 @login_required
-def add_income_category(request):
+def way_category_update (request, pk):
+
+    form = WayCategoryForm(request.POST or None, instance=ExpenceWay.objects.filter(user=request.user, id=pk).first())
+    data = {}
+
     if request.method == 'POST':
-
-        form = IncomeCategoryForm(request.POST)
-
-        if form.is_valid():
-            category = form.save()
-            cat_ser = serializers.serialize('jason', [category])
-            return JsonResponse({'category':cat_ser}, status=200)
-            
-            
-            #check if user already have a category with given name
-            if IncomeCategory.objects.filter(user=request.user, name=category.name[0:15].title()):
-                messages.warning(request, f'Błąd! Kategoria "{category.title()}" już istnieje!!')
-            else:
-                new_category = IncomeCategory.objects.create(user=request.user, name=category.name[0:15].title())
-                new_category.save()
-                return redirect('settings')
-            
-        else:
-            # some form errors occured.
-            return JsonResponse({"error": "a"}, status=400)
-
-    return JsonResponse({"error": "b"}, status=400)
-
-@login_required
-def settings (request):
-
-    #expence_cat = ExpenceCategory.objects.filter(user = request.user)
-    #form_add_ex_cat = ExpenceCategoryForm()
-    
-    income_cat = IncomeCategory.objects.filter(user = request.user)
-    form_add_in_cat = IncomeCategoryForm()
-
-    #expence_way = ExpenceWay.objects.filter(user = request.user)
-    #form_add_way = WayCategoryForm()
-
-    context = {
-    #'form_add_ex_cat':form_add_ex_cat,
-    'form_add_in_cat':form_add_in_cat,
-    #'form_add_way':form_add_way,
-    #'expence_cat':expence_cat,
-    #'expence_way':expence_way,
-    'income_cat':income_cat,
-    }
-    return render(request, 'budget/settings.html', context)
-
-    
-    if request.method == 'POST': #and "add_expence_category" in request.POST:
-        form = IncomeCategoryForm(request.POST)
-
-        if form.is_valid():
-            add_category(form=form, model=IncomeCategory, request=request)
-            return redirect('settings')
-
-        
-        form_add_ex_cat = ExpenceCategoryForm(request.POST)    
-        if form_add_ex_cat.is_valid():
-            add_category(form=form_add_ex_cat, model=ExpenceCategory, request=request)
-            return redirect('settings')
-       
-        elif request.method == 'POST' and "add_income_category" in request.POST:
-            form_add_in_cat = IncomeCategoryForm(request.POST)
-
-            if form_add_in_cat.is_valid():
-                add_category(form=form_add_in_cat, model=IncomeCategory, request=request)
-                return redirect('settings')
-
-        elif request.method == 'POST' and "add_expence_way" in request.POST:
-            form_add_way = WayCategoryForm(request.POST)
-
-            if form_add_way.is_valid():
-                add_category(form=form_add_way, model=ExpenceWay, request=request)
-                return redirect('settings')
-'''
-
-@login_required
-def way_category_update (request, name):
-    if request.method == 'POST':
-        form = WayCategoryForm(request.POST, instance=ExpenceWay.objects.filter(user=request.user, name=name).first())
         if form.is_valid():
             category = form.save(commit=False)
 
-            if ExpenceWay.objects.filter(user=request.user, name=category.name.title()):
-                messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
+            if ExpenceWay.objects.filter(user=request.user, name=category.name):
+               data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+               return JsonResponse(data, status=400)
+            
             else:
-                category.name = category.name[0:15]
                 category.save()
-            return redirect('settings')
+                data['name'] = form.cleaned_data.get('name')
+                return JsonResponse(data, status=200)
     else:
-       form = WayCategoryForm(instance=ExpenceWay.objects.filter(user=request.user, name=name).first())
-
-    context = {
-        'form': form,
-    }
-    
-    return render(request,'budget/category_update.html',context)
+        category = ExpenceWay.objects.filter(user=request.user, id=pk).first()
+        data['name'] = category.name
+        return JsonResponse(data, status=200)
 
 def register(request):
     

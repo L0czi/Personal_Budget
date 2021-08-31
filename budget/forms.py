@@ -47,7 +47,7 @@ class WayCategoryForm (forms.ModelForm):
             'name':(''),
         }
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria'}),
+            'name': forms.TextInput(attrs={'placeholder': 'Nowa Kategoria', 'id':'addExpenceWayInput'}),
         }
     def clean_name(self):
         data = self.cleaned_data['name'].title()
