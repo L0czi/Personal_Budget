@@ -59,25 +59,25 @@
         <button class="mb-2 castom-btn js_button shadow">Przychody</button>
       </div>
       <div class="js_toggle_group" style="display: none;">
-        {% if income_cat %}
         <ul id="incomes-categorys-list" class="list-group">
-          {% for element in income_cat %}
+          {% if incomes_categories %}
+            {% for element in incomes_categories %}
           <li id='line{{element.id}}' class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
-            <button id='deleteCategoryButton{{element.id}}' type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='incomes' data-urledit="{% url 'income-category-update' element.id %}" data-urldelete="{% url 'income-category-delete' element.id %}"></button>
-            <button id="editCategoryButton{{element.id}}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id='{{element.id}}'data-type='incomes' data-url="{% url 'income-category-update' element.id %}"></button>
+            <button id="deleteCategoryButton{{element.id}}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='incomes' data-urledit="{% url 'income-category-update' element.id %}" data-urldelete="{% url 'income-category-delete' element.id %}"></button>
+            <button id="editCategoryButton{{element.id}}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id='{{element.id}}' data-type='incomes' data-url="{% url 'income-category-update' element.id %}"></button>
           </li>
-          {% endfor %}
+            {% endfor %}
+          {% endif %}
           <li class="list-group-item d-flex justify-content-end">
             <form id="addIncomeCategoryForm" method="post">{% csrf_token %}
               <div class="btn-group">
-                {{form_add_in_cat.name|as_crispy_field}}
-                <button name="add_income_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                {{income_category_form.name|as_crispy_field}}
+                <button id="addIncomeCategoryButton"type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
               </div>
             </form>
           </li>
         </ul>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -88,24 +88,25 @@
         <button class="mb-2 castom-btn js_button shadow">Wydatki</button>
       </div>
       <div class="js_toggle_group" style="display: none;">
-        {% if expence_cat %}
-        <ul class="list-group">
-          {% for element in expence_cat %}
-          <li class="list-group-item d-flex">
+        <ul id="expences-categorys-list" class="list-group">
+          {% if expences_categories %}
+            {% for element in expences_categories %}
+          <li id='line{{element.id}}' class="list-group-item d-flex">
             <span class="mr-auto">{{ element.name }}</span>
-            <div><a class='btn btn-secondary btn-sm' href="{% url 'settings-exp-cat-update' element.name %}">Edytuj</a></div>
+            <button id="deleteCategoryButton{{element.id}}" type="button" class="mr-2 btn btn-danger btn-sm fas fa-trash" data-toggle="modal" data-target=".bd-delete-modal-sm" data-id='{{element.id}}' data-type='expences' data-urledit="{% url 'expence-category-update' element.id %}" data-urldelete="{% url 'expence-category-delete' element.id %}"></button>
+            <button id="editCategoryButton{{element.id}}" type="button" class="btn btn-secondary btn-sm far fa-edit" data-toggle="modal" data-target=".bd-edit-modal-sm" data-id='{{element.id}}' data-type='expences' data-url="{% url 'expence-category-update' element.id %}"></button>
           </li>
-          {% endfor %}
+            {% endfor %}
+          {% endif %}
           <li class="list-group-item d-flex justify-content-end">
-            <form action="" method="post">{% csrf_token %}
+            <form id="addExpenceCategoryForm" method="post">{% csrf_token %}
               <div class="btn-group">
-                {{form_add_ex_cat.name|as_crispy_field}}
-                <button name="add_expence_category" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
+                {{expence_category_form.name|as_crispy_field}}
+                <button id="addExpenceCategoryButton" type="submit" class="btn btn-secondary btn-sm fas fa-plus"></button>
               </div>
             </form>
           </li>
         </ul>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -142,5 +143,6 @@
 {%block script%}
 <script src="{% static 'budget/settings.js' %}"></script>
 <script src="{% static 'budget/addIncomes.js' %}"></script>
+<script src="{% static 'budget/addExpences.js' %}"></script>
  
 {%endblock script%}

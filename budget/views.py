@@ -16,6 +16,10 @@ class IncomeCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
     model = IncomeCategory
     success_url = reverse_lazy('settings')
 
+class ExpenceCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
+    model = ExpenceCategory
+    success_url = reverse_lazy('settings')
+
 
 @login_required
 def index(request):
@@ -149,13 +153,17 @@ def create_expence(request):
 
 @login_required
 def settings(request):
-    income_category = IncomeCategory.objects.filter(user=request.user)
-    form = IncomeCategoryForm(request.POST or None)
+    incomes_categories = IncomeCategory.objects.filter(user=request.user)
+    income_category_form = IncomeCategoryForm(request.POST or None)
+
+    expences_categories = ExpenceCategory.objects.filter(user=request.user)
+    expence_category_form = ExpenceCategoryForm(request.POST or None)
+
     data = {}
     
-    if request.method == 'POST':
-        if form.is_valid():
-            category = form.save(commit=False)
+    if request.method == 'POST' and 'addIncomeCategoryButton' in request.POST:
+        if income_category_form.is_valid():
+            category = income_category_form.save(commit=False)
 
             if IncomeCategory.objects.filter(user=request.user, name=category.name):
                 data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
@@ -164,18 +172,32 @@ def settings(request):
             else:
                 new_category = IncomeCategory.objects.create(user=request.user, name=category.name)
                 new_category.save()
-                data['name'] = form.cleaned_data.get('name')
+                data['name'] = income_category_form.cleaned_data.get('name')
+                data['id'] = new_category.id
+                data['succesText'] = f'Dodano nową kategorię - "{new_category.name}"'
+                return JsonResponse(data, status=200)
+
+    elif request.method == 'POST' and 'addExpenceCategoryButton' in request.POST:
+        if expence_category_form.is_valid():
+            category = expence_category_form.save(commit=False)
+
+            if ExpenceCategory.objects.filter(user=request.user, name=category.name):
+                data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+                return JsonResponse(data, status=400)
+
+            else:
+                new_category = ExpenceCategory.objects.create(user=request.user, name=category.name)
+                new_category.save()
+                data['name'] = expence_category_form.cleaned_data.get('name')
                 data['id'] = new_category.id
                 data['succesText'] = f'Dodano nową kategorię - "{new_category.name}"'
                 return JsonResponse(data, status=200)
 
     context = {
-    #'form_add_ex_cat':form_add_ex_cat,
-    'form_add_in_cat':form,
-    #'form_add_way':form_add_way,
-    #'expence_cat':expence_cat,
-    #'expence_way':expence_way,
-    'income_cat':income_category,
+    'income_category_form':income_category_form,
+    'expence_category_form':expence_category_form,
+    'incomes_categories':incomes_categories,
+    'expences_categories':expences_categories,
     }
     
     return render(request, 'budget/settings.html', context)
@@ -203,6 +225,28 @@ def income_category_update (request, pk):
         data['name'] = category.name
         return JsonResponse(data)
 
+@login_required
+def expence_category_update (request, pk):
+
+    form = ExpenceCategoryForm(request.POST or None, instance=ExpenceCategory.objects.filter(user=request.user, id=pk).first())
+    data = {}
+
+    if request.method == 'POST':
+        if form.is_valid():
+            category = form.save(commit=False)
+
+            if ExpenceCategory.objects.filter(user=request.user, name=category.name):
+               data['errorText'] = f'Błąd! Kategoria "{category.name}" już istnieje!!'
+               return JsonResponse(data, status=400)
+
+            else:
+                category.save()
+                data['name'] = form.cleaned_data.get('name')
+                return JsonResponse(data)
+    else:
+        category = ExpenceCategory.objects.filter(user=request.user, id=pk).first()
+        data['name'] = category.name
+        return JsonResponse(data)
 '''
 @login_required
 def add_income_category(request):
@@ -280,29 +324,6 @@ def settings (request):
                 add_category(form=form_add_way, model=ExpenceWay, request=request)
                 return redirect('settings')
 '''
-@login_required
-def expence_category_update (request, name):
-    if request.method == 'POST':
-        form = ExpenceCategoryForm(request.POST, instance=ExpenceCategory.objects.filter(user=request.user, name=name).first())
-        if form.is_valid():
-            category = form.save(commit=False)
-
-            if ExpenceCategory.objects.filter(user=request.user, name=category.name.title()):
-                messages.warning(request, f'Błąd! Kategoria "{category.name.title()}" już istnieje!!')
-            else:
-                category.name = category.name[0:15]
-                category.save()
-            return redirect('settings')
-    else:
-       form = ExpenceCategoryForm(instance=ExpenceCategory.objects.filter(user=request.user, name=name).first())
-
-    context = {
-        'form': form,
-    }
-    
-    return render(request,'budget/category_update.html',context)
-
-
 
 @login_required
 def way_category_update (request, name):
