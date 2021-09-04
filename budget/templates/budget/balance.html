@@ -1,24 +1,23 @@
 {% extends "budget/base_generic.html" %}
-
 {% block content %}
 <section>
     <div class="container bg-main"">
         <div class="row">
             <div class="col-md-6">
                 <!--All expences grouped by category-->
-                <h5 class=" mt-2 mb-2">Wydatki Łącznie: {{aggr_all_expences}}</h5>
+                <h5 id='expenceHeader' class=" mt-2 mb-2">Wydatki Łącznie: {{aggr_all_expences}}</h5>
                 {% if aggr_all_expences > 0 %}
                 <ul class="list-group">
-                    {% for name, ammount in aggr_expences %}
+                    {% for name, id, ammount in aggr_expences %}
                         {% if ammount != None %}
-                            <li class="list-group-item d-flex">
+                            <li id='expenceBanner{{id}}' class="list-group-item d-flex">
                                 <span class="mr-auto" style="color: black;">{{name}}</span>
-                                <span class="mr-2" style="color: black;">{{ammount}}</span>
+                                <span id=expenceAmmount{{id}} class="mr-2" style="color: black;">{{ammount}}</span>
                                 <!-- Modal button -->
-                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#{{name}}Modal">Szczegóły</a></div>
+                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#expenceModal{{id}}" data-url='#'>Szczegóły</a></div>
                             </li>
                             <!-- Modal -->
-                            <div style='color:black' class="modal fade" id="{{name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
+                            <div style='color:black' class="modal fade" id="expenceModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -28,18 +27,19 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <ul class="list-group">
+                                            <ul id="list-expence{{id}}" class="list-group">
                                                 {% for element in all_expences %}
                                                     {% if element.expence_category == name %}
-                                                        <li class="list-group-item d-flex flex-column flex-sm-row align-items-center">
+                                                        <li id="line{{element.id}}" class="list-group-item d-flex flex-column flex-sm-row align-items-center">
                                                             <span class="mr-sm-auto">{{element.expence_way}}</span>
                                                             <div class="mr-3">
                                                                 <span class="mr-3">{{element.ammount}}</span>
                                                                 <span>{{element.date|date:"d.m.y"}}</span>
                                                             </div>
                                                             <div class="mr-2">
+                                                                <form>{% csrf_token %}</form>
                                                                 <button type="button" class="btn btn-secondary btn-sm far fa-sticky-note" data-toggle="popover" data-placement="top" data-content="{{element.notes}}"></button>
-                                                                <button name="#" type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
+                                                                <button id="deleteButton" name="{{element.id}}" data-url="{% url 'expence-delete' element.id %}" date-name = {{id}} data-type='expence' type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
                                                             </div>
                                                         </li>
                                                     {%endif%}
@@ -57,19 +57,19 @@
                 {%endif%}
     
                 <!--All incomes grouped by category-->
-                <h5 class=" mt-2 mb-2">Przychody Łącznie: {{aggr_all_incomes}}</h5>
+                <h5 id='incomeHeader' class=" mt-2 mb-2">Przychody Łącznie: {{aggr_all_incomes}}</h5>
                 {% if aggr_all_incomes > 0 %}
                 <ul class="list-group">
-                    {% for name, ammount in aggr_incomes %}
+                    {% for name, id, ammount in aggr_incomes %}
                         {% if ammount != None %}
-                            <li class="list-group-item d-flex">
+                            <li id='incomeBanner{{id}}' class="list-group-item d-flex">
                                 <span class="mr-auto" style="color: black;">{{name}}</span>
-                                <span class="mr-2" style="color: black;">{{ammount}}</span>
+                                <span id='incomeAmmount{{id}}' class="mr-2" style="color: black;">{{ammount}}</span>
                                 <!-- Modal button -->
-                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#{{name}}Modal">Szczegóły</a></div>
+                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#incomeModal{{id}}">Szczegóły</a></div>
                             </li>
                             <!-- Modal -->
-                            <div style='color:black' class="modal fade" id="{{name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
+                            <div style='color:black' class="modal fade" id="incomeModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -79,17 +79,18 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <ul class="list-group">
+                                            <ul id="list-income{{id}}" class="list-group">
                                                 {% for element in all_incomes %}
                                                     {% if element.income_category == name %}
-                                                        <li class="list-group-item d-flex flex-column flex-sm-row align-items-center justify-content-end">
+                                                        <li id="line{{element.id}}" class="list-group-item d-flex flex-column flex-sm-row align-items-center justify-content-end">
                                                             <div class="mr-3">
                                                                 <span class="mr-3">{{element.ammount}}</span>
                                                                 <span>{{element.date|date:"d.m.y"}}</span>
                                                             </div>
                                                             <div class="mr-2">
+                                                                <form>{% csrf_token %}</form>
                                                                 <button type="button" class="btn btn-secondary btn-sm far fa-sticky-note" data-toggle="popover" data-placement="top" data-content="{{element.notes}}"></button>
-                                                                <button name="#" type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
+                                                                <button id="deleteButton" name="{{element.id}}" data-url="{% url 'income-delete' element.id %}" date-name = {{id}} data-type='income' type="submit" class="btn btn-danger btn-sm fas fa-trash"></button>
                                                             </div>
                                                         </li>
                                                     {%endif%}
@@ -104,9 +105,9 @@
                 </ul>
                 <br>
                 {% else %}
-                            <p>Nie dodano przychodu! Dodaj swój pierwszy wydatek w zakładce "PRZYCHÓD"</p>
+                            <p>Nie dodano przychodu! Dodaj swój pierwszy przychód w zakładce "PRZYCHÓD"</p>
                 {%endif%}
-                <h3>Bilans: {{balance}}</h3>
+                <h3 id='balanceHeader'>Bilans: {{balance}}</h3>
             </div>
             <div style="background-color: grey;" class="col-md-6 d-flex flex-column align-items-center justify-content-center">
                 <label>PLACEHOLDER</label>
@@ -115,11 +116,10 @@
         </div>
     </div>
 </section>
-{% endblock content %}
+{%endblock content%}
 {%block script%}
-<script>
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    })
-</script>
+{% load static %}
+<script src="{% static 'budget/balance.js' %}"></script>
 {%endblock script%}
+
+

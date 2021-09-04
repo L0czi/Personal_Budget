@@ -23,6 +23,13 @@ class ExpenceWayCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
     model = ExpenceWay
     success_url = reverse_lazy('settings')
 
+class IncomeDeleteView(generic.DeleteView, LoginRequiredMixin):
+    model = Income
+    success_url = reverse_lazy('balance')
+
+class ExpenceDeleteView(generic.DeleteView, LoginRequiredMixin):
+    model = Expence
+    success_url = reverse_lazy('balance')
 
 @login_required
 def index(request):
@@ -31,6 +38,7 @@ def index(request):
 
 @login_required
 def balance(request):
+    data = {}
     '''User Expence data'''
     # Querry all expence categorys assigned to currently log user
     all_expences_categorys = ExpenceCategory.objects.filter(user=request.user)
@@ -38,7 +46,7 @@ def balance(request):
     all_expences_categorys_id = [all_expences_categorys[i].id for i in range(0,len(all_expences_categorys))]
     # Querry all user expence wich match user expence category id sorted by last added
     all_expences = Expence.objects.filter(expence_category__in=all_expences_categorys_id).order_by('-date', '-id')
-
+    
     # All expences aggragate by category for currently log user
     aggr_exp_query = [Expence.objects
         .filter( 
@@ -46,7 +54,7 @@ def balance(request):
         .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in all_expences_categorys_id]
     
     # Create a tuple - (expence category name, summary expence for category)
-    aggr_expences = list(zip(all_expences_categorys, aggr_exp_query))
+    aggr_expences = list(zip(all_expences_categorys, all_expences_categorys_id ,aggr_exp_query))
 
     '''User Income data'''
     # Querry all income categorys assigned to currently log user
@@ -55,14 +63,13 @@ def balance(request):
     all_incomes_categorys_id = [all_incomes_categorys[i].id for i in range(0,len(all_incomes_categorys))]
     # Querry all user expence wich match user expence category id sorted by last added
     all_incomes = Income.objects.filter(income_category__in=all_incomes_categorys_id).order_by('-date', '-id')
-
     #All incomes aggragate by category for currently log user
     aggr_incomes_query = [Income.objects
         .filter(
             income_category=income_category)
         .aggregate(Sum('ammount'))['ammount__sum'] for income_category in all_incomes_categorys_id]
 
-    aggr_incomes = list(zip(all_incomes_categorys, aggr_incomes_query))
+    aggr_incomes = list(zip(all_incomes_categorys, all_incomes_categorys_id, aggr_incomes_query))
 
     '''Balance'''
     #Sum all expences
@@ -77,6 +84,32 @@ def balance(request):
         aggr_all_expences = 0
         
     balance = aggr_all_incomes - aggr_all_expences
+
+    if request.method == 'GET' and 'AJAX' in request.GET:
+
+        aggr_all_expences = all_expences.aggregate(Sum('ammount'))['ammount__sum']
+        aggr_all_incomes = all_incomes.aggregate(Sum('ammount'))['ammount__sum']
+
+        if aggr_all_incomes == None:
+            aggr_all_incomes = 0
+    
+        if aggr_all_expences == None:
+            aggr_all_expences = 0        
+
+        balance = aggr_all_incomes - aggr_all_expences
+
+        if request.GET['type'] == 'expence':
+            updated_ecategory_value = Expence.objects.filter( expence_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
+
+        elif request.GET['type'] =='income':
+            updated_ecategory_value = Income.objects.filter( income_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
+
+        data['aggr_all_expences'] = aggr_all_expences
+        data['aggr_all_incomes'] = aggr_all_incomes
+        data['balance'] = balance
+        data['updated_category_value'] = updated_ecategory_value
+
+        return JsonResponse(data, status=200)
 
     context = {
         'aggr_expences': aggr_expences,
