@@ -36,88 +36,85 @@ def index(request):
 
     return render (request, 'budget/index.html')
 
+def aggregate_all(aggr):
+    aggregated = aggr.aggregate(Sum('ammount'))['ammount__sum']
+    
+    if aggregated == None:
+        return 0
+    else:
+        return aggregated
+
 @login_required
 def balance(request):
     data = {}
     '''User Expence data'''
     # Querry all expence categorys assigned to currently log user
-    all_expences_categorys = ExpenceCategory.objects.filter(user=request.user)
+    user_expences_categories = ExpenceCategory.objects.filter(user=request.user)
     # Create a lits of all categorys id 
-    all_expences_categorys_id = [all_expences_categorys[i].id for i in range(0,len(all_expences_categorys))]
-    # Querry all user expence wich match user expence category id sorted by last added
-    all_expences = Expence.objects.filter(expence_category__in=all_expences_categorys_id).order_by('-date', '-id')
+    user_expences_categories_id = [user_expences_categories[i].id for i in range(0,len(user_expences_categories))]
+    # Querry all user expences wich match user expence category id sorted by last added
+    all_user_expences = Expence.objects.filter(expence_category__in=user_expences_categories_id).order_by('-date', '-id')
     
     # All expences aggragate by category for currently log user
-    aggr_exp_query = [Expence.objects
+    user_expences_aggregate_query = [Expence.objects
         .filter( 
             expence_category=expence_category)
-        .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in all_expences_categorys_id]
+        .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in user_expences_categories_id]
     
     # Create a tuple - (expence category name, summary expence for category)
-    aggr_expences = list(zip(all_expences_categorys, all_expences_categorys_id ,aggr_exp_query))
+    user_expences_aggregate = list(zip(user_expences_categories, user_expences_categories_id ,user_expences_aggregate_query))
 
     '''User Income data'''
     # Querry all income categorys assigned to currently log user
-    all_incomes_categorys = IncomeCategory.objects.filter(user=request.user)
+    user_incomes_categories = IncomeCategory.objects.filter(user=request.user)
     # Create a lits of all categorys id 
-    all_incomes_categorys_id = [all_incomes_categorys[i].id for i in range(0,len(all_incomes_categorys))]
+    user_incomes_categories_id = [user_incomes_categories[i].id for i in range(0,len(user_incomes_categories))]
     # Querry all user expence wich match user expence category id sorted by last added
-    all_incomes = Income.objects.filter(income_category__in=all_incomes_categorys_id).order_by('-date', '-id')
+    all_user_incomes = Income.objects.filter(income_category__in=user_incomes_categories_id).order_by('-date', '-id')
     #All incomes aggragate by category for currently log user
-    aggr_incomes_query = [Income.objects
+    user_incomes_aggregate_query = [Income.objects
         .filter(
             income_category=income_category)
-        .aggregate(Sum('ammount'))['ammount__sum'] for income_category in all_incomes_categorys_id]
+        .aggregate(Sum('ammount'))['ammount__sum'] for income_category in user_incomes_categories_id]
 
-    aggr_incomes = list(zip(all_incomes_categorys, all_incomes_categorys_id, aggr_incomes_query))
+    user_incomes_aggregate = list(zip(user_incomes_categories, user_incomes_categories_id, user_incomes_aggregate_query))
 
     '''Balance'''
     #Sum all expences
-    aggr_all_expences = all_expences.aggregate(Sum('ammount'))['ammount__sum']
+    aggr_all_user_expences = aggregate_all(aggr=all_user_expences)
     #Sum all incomes
-    aggr_all_incomes = all_incomes.aggregate(Sum('ammount'))['ammount__sum']
-    #Balance
-    if aggr_all_incomes == None:
-        aggr_all_incomes = 0
-    
-    if aggr_all_expences == None:
-        aggr_all_expences = 0
-        
-    balance = aggr_all_incomes - aggr_all_expences
+    aggr_all_user_incomes = aggregate_all(aggr=all_user_incomes)
+    #Balance        
+    balance = aggr_all_user_incomes - aggr_all_user_expences
 
     if request.method == 'GET' and 'AJAX' in request.GET:
 
-        aggr_all_expences = all_expences.aggregate(Sum('ammount'))['ammount__sum']
-        aggr_all_incomes = all_incomes.aggregate(Sum('ammount'))['ammount__sum']
-
-        if aggr_all_incomes == None:
-            aggr_all_incomes = 0
-    
-        if aggr_all_expences == None:
-            aggr_all_expences = 0        
-
-        balance = aggr_all_incomes - aggr_all_expences
+        updated_aggr_all_expences = aggregate_all(aggr=all_user_expences)
+        updated_all_incomes = aggregate_all(aggr=all_user_incomes)
+        updated_balance = updated_all_incomes - updated_aggr_all_expences
 
         if request.GET['type'] == 'expence':
-            updated_ecategory_value = Expence.objects.filter( expence_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
+            updated_category_value = Expence.objects.filter( expence_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
 
         elif request.GET['type'] =='income':
-            updated_ecategory_value = Income.objects.filter( income_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
+            updated_category_value = Income.objects.filter( income_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
 
-        data['aggr_all_expences'] = aggr_all_expences
-        data['aggr_all_incomes'] = aggr_all_incomes
-        data['balance'] = balance
-        data['updated_category_value'] = updated_ecategory_value
+        data['aggr_all_expences'] = updated_aggr_all_expences
+        data['aggr_all_incomes'] = updated_all_incomes
+        data['balance'] = updated_balance
+        data['updated_category_value'] = updated_category_value
 
         return JsonResponse(data, status=200)
 
     context = {
-        'aggr_expences': aggr_expences,
-        'aggr_all_expences':aggr_all_expences,
-        'all_expences': all_expences,
-        'aggr_incomes': aggr_incomes,
-        'aggr_all_incomes':aggr_all_incomes,
-        'all_incomes': all_incomes,
+        'aggr_expences': user_expences_aggregate,
+        'aggr_all_expences':aggr_all_user_expences,
+        'all_expences': all_user_expences,
+
+        'aggr_incomes': user_incomes_aggregate,
+        'aggr_all_incomes':aggr_all_user_incomes,
+        'all_incomes': all_user_incomes,
+
         'balance':balance,
     }
 
