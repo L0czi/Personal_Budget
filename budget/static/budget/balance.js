@@ -13,7 +13,6 @@ $(document).ready( ()=>{
         var url_balance = '/budget/balance';
 
         $.get(url_balance,{AJAX: 'True', category: category_id, type:type}, function(response){
-            console.log(response)
             $('#balanceHeader').text(`Bilans: ${response.balance}`)
             $('#expenceHeader').text(`Wydatki Łącznie: ${response.aggr_all_expences}`)
             $('#incomeHeader').text(`Przychody Łącznie: ${response.aggr_all_incomes}`)

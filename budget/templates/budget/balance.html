@@ -1,7 +1,7 @@
 {% extends "budget/base_generic.html" %}
 {% block content %}
 <section>
-    <div class="container bg-main"">
+    <div class="container offset-xl-3 offset-lg-2 offset-md-1 offset-sm-2 offset-1 col-xl-6 col-lg-8 col-md-10 col-sm-8 col-10 bg-main">
         <div class="row">
             <div class="col-md-6">
                 <!--All expences grouped by category-->
@@ -14,7 +14,7 @@
                                 <span class="mr-auto" style="color: black;">{{name}}</span>
                                 <span id=expenceAmmount{{id}} class="mr-2" style="color: black;">{{ammount}}</span>
                                 <!-- Modal button -->
-                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#expenceModal{{id}}" data-url='#'>Szczegóły</a></div>
+                                <div <a class='btn btn-secondary btn-sm fas fa-info-circle'  data-toggle="modal" data-target="#expenceModal{{id}}" data-url='#'></a></div>
                             </li>
                             <!-- Modal -->
                             <div style='color:black' class="modal fade" id="expenceModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
@@ -66,7 +66,7 @@
                                 <span class="mr-auto" style="color: black;">{{name}}</span>
                                 <span id='incomeAmmount{{id}}' class="mr-2" style="color: black;">{{ammount}}</span>
                                 <!-- Modal button -->
-                                <div <a class='btn btn-secondary btn-sm'  data-toggle="modal" data-target="#incomeModal{{id}}">Szczegóły</a></div>
+                                <div <a class='btn btn-secondary btn-sm fas fa-info-circle'  data-toggle="modal" data-target="#incomeModal{{id}}"></a></div>
                             </li>
                             <!-- Modal -->
                             <div style='color:black' class="modal fade" id="incomeModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{name}}ModalLabel" aria-hidden="true">
@@ -109,9 +109,9 @@
                 {%endif%}
                 <h3 id='balanceHeader'>Bilans: {{balance}}</h3>
             </div>
-            <div style="background-color: grey;" class="col-md-6 d-flex flex-column align-items-center justify-content-center">
-                <label>PLACEHOLDER</label>
-                <img src="https://cdn.corporatefinanceinstitute.com/assets/line-graph.jpg" height="200px" width="350px" alt="placeholder for real graph">
+            <div class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+                <div id='chartDiv' style='width: 100%; height: 350px;'></div>
+                
             </div>
         </div>
     </div>
@@ -120,6 +120,7 @@
 {%block script%}
 {% load static %}
 <script src="{% static 'budget/balance.js' %}"></script>
+<script src="{% static 'budget/chart.js' %}"></script>
 {%endblock script%}
 
 

@@ -9,6 +9,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic
+from django.core import serializers
 
 
 class IncomeCategoryDeleteView(generic.DeleteView, LoginRequiredMixin):
@@ -30,6 +31,31 @@ class IncomeDeleteView(generic.DeleteView, LoginRequiredMixin):
 class ExpenceDeleteView(generic.DeleteView, LoginRequiredMixin):
     model = Expence
     success_url = reverse_lazy('balance')
+
+@login_required
+def chart_data(request):
+
+    data = {}
+
+    user_expences_categories = ExpenceCategory.objects.filter(user=request.user)
+
+    user_expences_categories_name = [user_expences_categories[i].name for i in range (0, len(user_expences_categories))]
+    user_expences_categories_id = [user_expences_categories[i].id for i in range(0,len(user_expences_categories))]
+    
+    user_expences_aggregate_query = [Expence.objects
+    .filter( 
+        expence_category=expence_category)
+    .aggregate(Sum('ammount'))['ammount__sum'] for expence_category in user_expences_categories_id]
+
+    user_expences_ammount = [user_expences_aggregate_query[i] if user_expences_aggregate_query[i] !=None else 0 for i in range (0, len(user_expences_aggregate_query))]
+
+    result = list(zip(user_expences_categories_name, user_expences_ammount))
+
+    chart_data = [{'label':label,'ammount':int(ammount)} for (label, ammount) in result]
+
+    data['chart_data'] = chart_data
+    
+    return JsonResponse(data, status=200)    
 
 @login_required
 def index(request):
@@ -98,7 +124,7 @@ def balance(request):
 
         elif request.GET['type'] =='income':
             updated_category_value = Income.objects.filter( income_category=request.GET['category']).aggregate(Sum('ammount'))['ammount__sum']
-
+        ####################################################################################
         data['aggr_all_expences'] = updated_aggr_all_expences
         data['aggr_all_incomes'] = updated_all_incomes
         data['balance'] = updated_balance
