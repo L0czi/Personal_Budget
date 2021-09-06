@@ -1,0 +1,1 @@
+web: gunicorn personal_budget.wsgi
