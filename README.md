@@ -14,17 +14,25 @@
 ## General info
 This is my first Django web application which I created for learning purpose.
 Main goal is to allow users to better manage their personal budget by tracing all expenses and incomes. 
+Checkout live demo !!!   
+https://budgetdjangoapp.herokuapp.com/login/  
+user: 'User'  
+password: 'testing321  
+
 
 ## Technologies
 - Python 3.8.5
 - Django 3.2.5
 - Bootstrap 5
 - SQLite 3
+- PostgreSQL
 - jQuery
+- AJAX
 
 ## Features
 - Create your own expences and incomes category
 - Select from diffrent paymant methods and add your own.
+- Trace your expences on pie chart.
 
 ## Screenshots
 ![Example screenshot](./img/screen.png)
@@ -70,9 +78,7 @@ http://127.0.0.1:8000/
 Project is:  _in progress_ 
 
 ## To do:
-- Add possibility to edit and delete your incomes and expences
-- Add possibility to delete incomes and expences category.
-- Add AJAX requests to edit / delete forms.
+- Possibility to change period of time in balance page
 - ...
 
 ## Acknowledgements
