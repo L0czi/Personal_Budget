@@ -14,7 +14,11 @@
 ## General info
 This is my first Django web application which I created for learning purpose.
 Main goal is to allow users to better manage their personal budget by tracing all expenses and incomes. 
-Checkout live demo here: https://budgetdjangoapp.herokuapp.com/login/
+Checkout live demo !!! 
+https://budgetdjangoapp.herokuapp.com/login/
+user: 'User'
+password: 'testing321
+
 
 ## Technologies
 - Python 3.8.5
