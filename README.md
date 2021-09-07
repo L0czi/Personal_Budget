@@ -27,6 +27,7 @@ password: 'testing321
 - SQLite 3
 - PostgreSQL
 - jQuery
+- AJAX
 
 ## Features
 - Create your own expences and incomes category
